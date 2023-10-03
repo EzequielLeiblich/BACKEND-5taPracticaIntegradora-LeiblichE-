@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="logo">
+        <h1>MECATRON REPUESTOS</h1>
+        <div>
+            <a href="/login"><img src="https://i.ibb.co/Kxb8GDb/login.png" alt="login" border="0" class="logoS"></a>
+            <a href="/chat"><img src="https://i.ibb.co/ftwkrSb/png-transparent-email-computer-icons-message-icon-design-bass-miscellaneous-angle-black-1-1.png"  alt="login" border="0" class="logoS"></a>
+            <a href="/premiumView"><img src="https://i.ibb.co/f8TCwG1/VIP-modified.png" alt="VIP-modified" border="0" class="logoS"></a>
+            <a href="/cart"><img src="https://i.ibb.co/8DFrsw8/cart1.png" alt="cart" border="0" class="logoS"></a>
+        </div>
+    </div>
+    </br>
+    <h2>Catálogo en tiempo real:</h2>
+    </br>
+    <table id="tableProd" class="table">
+    </table>
+    <h2>Filtros:</h2>
+    <table id="tableFil" class="table">
+        <thead>
+            <tr>
+                <th>Limit</th>
+                <th>Page</th>
+                <th>Sort</th>
+                <th>Filtro</th>
+                <th>Filtro Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" id="limit" placeholder="Indicar Limit" /></td>
+                <td><input type="text" id="page" placeholder="Indicar Page" /></td>
+                <td><input type="text" id="sort" placeholder="1 / -1" /></td>
+                <td><input type="text" id="filtro" placeholder="category / stock" /></td>
+                <td><input type="text" id="filtroVal" placeholder="Indicar Valor de Filtro" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="Pags"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js" type="module"></script>

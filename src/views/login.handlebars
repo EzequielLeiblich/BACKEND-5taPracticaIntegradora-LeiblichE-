@@ -1,0 +1,37 @@
+<div class="Session">
+    <div class="container">
+        <div class="logo">
+            <h1>MECATRON</h1>
+            <div>
+                <a href="/register"><img src="https://i.ibb.co/gjFXVJv/72648.png" alt="register" border="0" class="logoS"></a>
+                <a href="/chat"><img src="https://i.ibb.co/ftwkrSb/png-transparent-email-computer-icons-message-icon-design-bass-miscellaneous-angle-black-1-1.png"  alt="login" border="0" class="logoS"></a>
+                <a href="/products" style="margin-left: 2em"><img src="https://i.ibb.co/pKgL6pC/bench.png" alt="realtimeproducts" border="0" class="logoS"></a>
+                <a href="/cart" style="margin-left: 2em"><img src="https://i.ibb.co/8DFrsw8/cart1.png" alt="cart" border="0" class="logoS"></a>
+            </div>
+        </div>
+        </br>
+        <h2>Login:</h2>
+        </br>
+        <form id="loginForm">
+            <p>Correo electrónico</p>
+            <br/>
+            <input type="email" placeholder="Correo" name="email" required>
+            <br/>
+            <p>Contraseña</p>
+            <br/>
+            <input type="password" placeholder="Contraseña" name="password" required>
+            <br/>
+            <br/>
+            <input class="boton" type="submit">
+        </form>
+        <br/>
+        <br/>
+    </div>
+    <div>
+        <a href="/api/sessions/github"><button class="boton">Entrar con GitHub</button></a>
+    </div>
+    <p>¿No estás registrado? <a href="/register">Regístrate aquí</a></p>
+    <p>¿Has olvidado tu contraseña? <a href="/requestResetPassword">Reestablecer tu contraseña</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/login.js"></script>

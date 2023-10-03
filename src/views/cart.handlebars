@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="logo">
+        <div id="head">
+            <h1>MECATRON</h1>
+        </div>
+        <div>
+            <a href="api/sessions/profile"><img src="https://i.ibb.co/Kxb8GDb/login.png" alt="login" border="0" class="logoS"></a>
+            <a href="/chat"><img src="https://i.ibb.co/ftwkrSb/png-transparent-email-computer-icons-message-icon-design-bass-miscellaneous-angle-black-1-1.png"  alt="login" border="0" class="logoS"></a>
+            <a href="/products" style="margin-left: 2em"><img src="https://i.ibb.co/pKgL6pC/bench.png" alt="realtimeproducts" border="0" class="logoS"></a>
+        </div>
+    </div>
+    </br>
+    <h2>Carrito:</h2>
+    </br>
+    <p id="Parrafo"></p>
+    <table id="tableCarts" class="table">
+        <thead>
+            <tr>
+                <th>Modelo</th>
+                <th>Img</th>
+                <th>Stock</th>
+                <th>Unds. a comprar</th>
+                <th>Precio x Und.</th>
+                <th>Subtotal</th>
+                <th>Eliminar del carrito</th>
+            </tr>
+        </thead>
+        <tbody id="tableProdCartID"></tbody>
+    </table>
+    <div id="cierreCompra">
+    <br/>
+    <br/>
+    <h2>Total a pagar:<span id="totalPrice">0</span></h2>
+    <br/>
+    <h2 id="finalizarCompraBtn" class="boton" id="finalizarCompra">Finalizar Compra</h2>
+    <br/>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/cart.js" type="module"></script>
