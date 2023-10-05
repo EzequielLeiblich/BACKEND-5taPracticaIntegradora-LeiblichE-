@@ -3,15 +3,9 @@ import passport from 'passport';
 import { rolesMiddlewareAdmin, rolesMiddlewareUserPremium } from "./middlewares/roles.middleware.js";
 const viewsRouter = Router();
 
-viewsRouter.get('/', (req, res) => {
+viewsRouter.get('/products', passport.authenticate('jwt', { session: false, failureRedirect: '/login'}), (req, res) => {
   res.render('products', {
-    title: 'Productos'
-  })
-});
-
-viewsRouter.get('/products', (req, res) => {
-  res.render('products', {
-    title: 'Productos'
+      title: 'Productos'
   })
 });
 
@@ -38,6 +32,12 @@ viewsRouter.get('/login', (req, res) => {
     title: 'Iniciar Sesión'
   });
 });
+
+viewsRouter.get('/changeRole', (req, res) => {
+  res.render('changeRole', {
+      title: 'Cambiar Role'
+  })
+})
 
 viewsRouter.get('/completeProfile', (req, res) => {
   res.render('extraForm', {

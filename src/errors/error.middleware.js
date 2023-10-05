@@ -5,7 +5,7 @@ export const errorMiddleware = (error, req, res, next) => {
     switch (error.code) {
 
         // Carts:
-        case ErrorEnums.INVALID_ID_CART_ERROR:
+            case ErrorEnums.INVALID_ID_CART_ERROR:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -15,7 +15,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.QUANTITY_INVALID_ERROR:
+            case ErrorEnums.QUANTITY_INVALID_ERROR:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -25,7 +25,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.PRODUCTS_MISSING_OR_INVALID:
+            case ErrorEnums.PRODUCTS_MISSING_OR_INVALID:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -35,7 +35,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_PRODUCT:
+            case ErrorEnums.INVALID_PRODUCT:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -45,7 +45,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_EMAIL:
+            case ErrorEnums.INVALID_EMAIL:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -55,7 +55,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.FORBIDDEN_UPDATED_CART_FIELDS:
+            case ErrorEnums.FORBIDDEN_UPDATED_CART_FIELDS:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -65,7 +65,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_UPDATED_CART_FIELDS:
+            case ErrorEnums.INVALID_UPDATED_CART_FIELDS:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -75,7 +75,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_UPTATED_PROD_IN_CART:
+            case ErrorEnums.INVALID_UPTATED_PROD_IN_CART:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -85,8 +85,8 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-            // Products: 
-        case ErrorEnums.INVALID_PRODUCT_DATA:
+        // Products: 
+            case ErrorEnums.INVALID_PRODUCT_DATA:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -96,7 +96,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_ID_PRODUCT_ERROR:
+            case ErrorEnums.INVALID_ID_PRODUCT_ERROR:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -106,7 +106,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_UPDATED_PRODUCT_FIELDS:
+            case ErrorEnums.INVALID_UPDATED_PRODUCT_FIELDS:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -116,8 +116,8 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-            // Menssages: 
-        case ErrorEnums.INVALID_MESSAGE_DATA:
+        // Menssages: 
+            case ErrorEnums.INVALID_MESSAGE_DATA:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -127,7 +127,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_ID_MESSAGE_ERROR:
+            case ErrorEnums.INVALID_ID_MESSAGE_ERROR:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -137,8 +137,8 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-            // Ticket:
-        case ErrorEnums.INVALID_TICKET_DATA:
+        // Ticket:
+            case ErrorEnums.INVALID_TICKET_DATA:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -148,7 +148,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_ID_TICKET_ERROR:
+            case ErrorEnums.INVALID_ID_TICKET_ERROR:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -158,8 +158,8 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-            // Session: 
-        case ErrorEnums.INVALID_REGISTER_DATA:
+        // Session: 
+            case ErrorEnums.INVALID_REGISTER_DATA:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -169,7 +169,7 @@ export const errorMiddleware = (error, req, res, next) => {
             });
             break;
 
-        case ErrorEnums.INVALID_LOGIN_DATA:
+            case ErrorEnums.INVALID_LOGIN_DATA:
             res.status(400).send({
                 status: "error",
                 error: error.name,
@@ -180,35 +180,45 @@ export const errorMiddleware = (error, req, res, next) => {
             break;
 
             case ErrorEnums.INVALID_EMAIL_USER:
-                res.status(400).send({
-                    status: "error",
-                    error: error.name,
-                    cause: error.cause,
-                    message: error.message,
-                    code: ErrorEnums.INVALID_EMAIL_USER
-                });
-                break;
+            res.status(400).send({
+                status: "error",
+                error: error.name,
+                cause: error.cause,
+                message: error.message,
+                code: ErrorEnums.INVALID_EMAIL_USER
+            });
+            break;
     
             case ErrorEnums.INVALID_NEW_PASS_USER:
-                res.status(400).send({
-                    status: "error",
-                    error: error.name,
-                    cause: error.cause,
-                    message: error.message,
-                    code: ErrorEnums.INVALID_NEW_PASS_USER
-                });
-                break;
+            res.status(400).send({
+                status: "error",
+                error: error.name,
+                cause: error.cause,
+                message: error.message,
+                code: ErrorEnums.INVALID_NEW_PASS_USER
+            });
+            break;
     
-                case ErrorEnums.INVALID_ID_USER_ERROR:
-                res.status(400).send({
-                    status: "error",
-                    error: error.name,
-                    cause: error.cause,
-                    message: error.message,
-                    code: ErrorEnums.INVALID_ID_USER_ERROR
-                });
-                break;
-    
+            case ErrorEnums.INVALID_ID_USER_ERROR:
+            res.status(400).send({
+                status: "error",
+                error: error.name,
+                cause: error.cause,
+                message: error.message,
+                code: ErrorEnums.INVALID_ID_USER_ERROR
+            });
+            break;
+
+        // User:
+            case ErrorEnums.INVALID_FORM_FILES_ERROR:
+            res.status(400).send({
+                status: "error",
+                error: error.name,
+                cause: error.cause,
+                message: error.message,
+                code: ErrorEnums.INVALID_FORM_FILES_ERROR
+            });
+            break;
         default:
             res.status(500).send({
                 status: "error",

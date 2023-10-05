@@ -8,17 +8,16 @@ import CartController from '../controllers/cartController.js';
 let sessionController = new SessionController()
 const cartController = new CartController();
 
-export const initializePassportGitHub = () => {
-
+export const initializePassportGitHub = (req, res, next) => {
     passport.use('github', new GitHubStrategy({
         clientID: config.GITHUB_CLIENT_ID,
         clientSecret: config.GITHUB_CLIENT_SECRET,
         callbackURL: config.GITHUB_CALLBACK_URL,
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            const user = profile._json.name;
-            if (user) {
-                return done(null, user);
+            const session = profile._json.name;
+            if (session) {
+                return done(null, session);
             }
         } catch (error) {
             return done(null, false, {
@@ -29,21 +28,25 @@ export const initializePassportGitHub = () => {
     }));
 };
 
-export const createBDSessionGH = async (req, res, next, session) => {
+export const createBDUserGH = async (req, res, next, user) => {
     let response = {};
     try {
-        const existSessionControl = await sessionController.getSessionController(req, res, session);
+        const existSessionControl = await sessionController.getUserController(req, res, user);
         if (existSessionControl.statusCode === 500) {
             response.statusCode = 500;
             response.message = existSessionControl.message;
             return response;
         }
         if (existSessionControl.statusCode === 200) {
-            const lastConnection = { last_connection: new Date().toLocaleDateString()  + " - " + new Date().toLocaleTimeString()}; 
-            await sessionController.updateSessionController(req, res, next, existSessionControl.result._id.toString(), lastConnection);
-            response.statusCode = 200;
-            response.result = existSessionControl.result;
-            return response;
+            const lastConnection = {
+                last_connection: new Date().toLocaleDateString() + " - " + new Date().toLocaleTimeString()
+            };
+            const lastConnect = await sessionController.updateUserController(req, res, next, existSessionControl.result._id.toString(), lastConnection);
+            if (lastConnect.statusCode === 200) {
+                response.statusCode = 200;
+                response.result = existSessionControl.result;
+                return response;
+            }
         }
         else if (existSessionControl.statusCode === 404) {
             const resultCartControl = await cartController.createCartController(req, res);
@@ -54,8 +57,8 @@ export const createBDSessionGH = async (req, res, next, session) => {
             }
             if (resultCartControl.statusCode === 200) {
                 const cart = resultCartControl.result;
-                const newSession = {
-                    first_name: session,
+                const newUser = {
+                    first_name: user,
                     last_name: "X",
                     email: "X",
                     age: 0,
@@ -63,18 +66,22 @@ export const createBDSessionGH = async (req, res, next, session) => {
                     role: "user",
                     cart: cart._id,
                 };
-                const createSessionControl = await sessionController.createSessionControler(req, res, newSession);
+                const createSessionControl = await sessionController.createUserControler(req, res, newUser);
                 if (createSessionControl.statusCode === 500) {
                     response.statusCode = 500;
                     response.message = createSessionControl.message;
                     return response;
                 }
                 if (createSessionControl.statusCode === 200) {
-                    const lastConnection = { last_connection: new Date().toLocaleDateString()  + " - " + new Date().toLocaleTimeString()};
-                    await sessionController.updateSessionController(req, res, next, existSessionControl.result._id.toString(), lastConnection);
-                    response.statusCode = 200;
-                    response.result = createSessionControl.result;
-                    return response;
+                    const lastConnection = {
+                        last_connection: new Date().toLocaleDateString() + " - " + new Date().toLocaleTimeString()
+                    };
+                    const lastConnect = await sessionController.updateUserController(req, res, next, createSessionControl.result._id.toString(), lastConnection);
+                    if (lastConnect.statusCode === 200) {
+                        response.statusCode = 200;
+                        response.result = createSessionControl.result;
+                        return response;
+                    }
                 }
             }
         };
@@ -84,5 +91,4 @@ export const createBDSessionGH = async (req, res, next, session) => {
         req.logger.error(response.message);
         return response;
     };
-
-}
+};

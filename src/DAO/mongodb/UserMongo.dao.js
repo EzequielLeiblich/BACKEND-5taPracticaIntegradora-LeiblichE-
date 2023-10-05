@@ -4,7 +4,7 @@ import config from "../../config.js";
 
 export default class UserDAO {
     connection = mongoose.connect(config.MONGO_URL);
- 
+
     async getUser(identifier) {
         let response = {};
         try {
@@ -36,6 +36,54 @@ export default class UserDAO {
                 response.status = "success";
                 response.result = userUpdate;
             };
+        } catch (error) {
+            response.status = "error";
+            response.message = "Error al actualizar los datos de usuario - DAO: " + error.message;
+        };
+        return response;
+    };
+
+    async uploadPremiumDocs(uid, documentsRuta, documentNames) {
+        let response = {};
+        try {
+            const user = await userModel.findOne({
+                _id: uid
+            });
+            if (user === null) {
+                response.status = "not found user";
+            } else {
+                for (let i = 0; i < documentsRuta.length; i++) {
+                    const ruta = documentsRuta[i];
+                    const name = documentNames[i];
+                    if (ruta !== undefined) {
+                        const existingDocument = user.documents.find(doc => doc.name === name);
+                        if (existingDocument) {
+                            existingDocument.reference = ruta;
+                        } else {
+                            user.documents.push({
+                                name: name,
+                                reference: ruta
+                            });
+                        }
+                    }
+                }
+                await user.save();
+                const docsSubidos = user.documents.map(doc => doc.name);
+                let docsPendientes = [];
+                for (const documentName of documentNames) {
+                    if (!docsSubidos.includes(documentName)) {
+                        docsPendientes.push(documentName);
+                    }
+                }
+                if (docsSubidos.length === 3) {
+                    response.status = "success";
+                    response.result = `${docsSubidos.join(', ')}`;
+                } else {
+                    response.status = "parcial success";
+                    response.result1 = `${docsSubidos.join(', ')}`;
+                    response.result2 = `${docsPendientes.join(', ')}`;
+                }
+            }
         } catch (error) {
             response.status = "error";
             response.message = "Error al actualizar los datos de usuario - DAO: " + error.message;

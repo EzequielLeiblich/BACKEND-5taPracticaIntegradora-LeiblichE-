@@ -36,6 +36,10 @@ const ErrorEnums = {
     INVALID_EMAIL_USER: 18,
     INVALID_NEW_PASS_USER: 19,
     INVALID_ID_USER_ERROR: 20,
+    
+    // User:
+
+    INVALID_FORM_FILES_ERROR: 30,
 }
 
 export default ErrorEnums;

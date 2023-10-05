@@ -42,7 +42,7 @@ function updateTable() {
     const productRow = `
       <tr>
         <td>${title}</td>
-        <td><img src="${thumbnail[0]}" alt="${title}" class="Imgs"></td>
+        <td><img src="${thumbnail}" alt="${title}" class="Imgs"></td>
         <td>${stock}</td>
         <td>
           <input type="number" class="input-quantity" data-product-id="${idProd}" value="${quantity}" min="1" max="${stock}">

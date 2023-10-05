@@ -116,7 +116,7 @@ export const initializePassportLocal = (req, res) => {
                 }
                 else if (existDBSessionControl.statusCode === 200) {
                     const user = existDBSessionControl.result;
-                    if (!isValidPassword(session, password)) {
+                    if (!isValidPassword(user, password)) {
                         return done(null, false, {
                             statusCode: 409,
                             message: 'Existe una cuenta asociada a este correo pero, la contraseña ingresada es incorrecta.'
@@ -127,7 +127,7 @@ export const initializePassportLocal = (req, res) => {
                         };
                         const lastConnect = await sessionController.updateUserController(req, res, done, user._id, lastConnection);
                         if (lastConnect.statusCode === 200) {
-                            return done(null, session, {
+                            return done(null, user, {
                                 statusCode: 200
                             });
                         }
