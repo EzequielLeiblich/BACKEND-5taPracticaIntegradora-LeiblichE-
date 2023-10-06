@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import passport from 'passport';
-import { rolesMiddlewareAdmin, rolesMiddlewareUserPremium } from "./middlewares/roles.middleware.js";
+import { rolesMiddlewareAdmin, rolesMiddlewareUserPremium, rolesMiddlewareUser } from "./middlewares/roles.middleware.js";
 const viewsRouter = Router();
 
-viewsRouter.get('/products', passport.authenticate('jwt', { session: false, failureRedirect: '/login'}), (req, res) => {
+viewsRouter.get('/products', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), (req, res) => {
   res.render('products', {
-      title: 'Productos'
+    title: 'Productos'
   })
 });
 
@@ -15,7 +15,7 @@ viewsRouter.get('/cart', (req, res) => {
   });
 });
 
-viewsRouter.get('/chat', (req, res) => {
+viewsRouter.get('/chat', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), rolesMiddlewareUser, (req, res) => {
   res.render('chat', {
     title: 'Chat'
   })

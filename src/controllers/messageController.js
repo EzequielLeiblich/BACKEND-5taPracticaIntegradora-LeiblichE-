@@ -32,7 +32,6 @@ export default class MessageController {
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
             } else if (resultService.statusCode === 200) {
-                response.result = resultService.result;
                 const messages = await this.messageService.getAllMessageService();
                 req.socketServer.sockets.emit('messages', messages.result)
                 req.logger.debug(response.message);
@@ -69,6 +68,7 @@ export default class MessageController {
 
     async deleteMessageController(req, res, next) {
         const mid = req.params.mid;
+        const uid = req.user.userID;
         try {
             if (!mid || !mongoose.Types.ObjectId.isValid(mid)) {
                 CustomError.createError({
@@ -77,21 +77,27 @@ export default class MessageController {
                     message: "El ID de mensaje proporcionado no es válido.",
                     code: ErrorEnums.INVALID_MESSAGE_DATA
                 });
+            } else if (!uid || !mongoose.Types.ObjectId.isValid(uid)) {
+                CustomError.createError({
+                    name: "Error al eliminar el mensaje.",
+                    cause: ErrorGenerator.generateUserIdInfo(uid),
+                    message: "El ID de usuario proporcionado no es válido.",
+                    code: ErrorEnums.INVALID_ID_USER_ERROR
+                });
             }
         } catch (error) {
             return next(error);
         };
         let response = {};
         try {
-            const resultService = await this.messageService.deleteMessageService(mid);
+            const resultService = await this.messageService.deleteMessageService(mid, uid);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
-                response.result = resultService.result;
                 const messages = await this.messageService.getAllMessageService();
                 req.socketServer.sockets.emit('messages', messages.result);
                 req.logger.debug(response.message);

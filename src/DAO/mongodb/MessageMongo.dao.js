@@ -12,7 +12,6 @@ export default class MessageDAO {
         try {
             const result = await messageModel.create(message);
             response.status = "success";
-            response.result = result;
         } catch (error) {
             response.status = "error";
             response.message = "Error al crear el mensaje - DAO: " + error.message;
@@ -38,18 +37,25 @@ export default class MessageDAO {
         return response;
     };
 
-    async deleteMessage(mid) {
+    async deleteMessage(mid, uid) {
         let response = {};
         try {
-            let result = await messageModel.deleteOne({
+            let getSms = await messageModel.findOne({
                 _id: mid
             });
-            if (result.deletedCount === 0) {
-                response.status = "not found message";
-            } else if (result.deletedCount === 1) {
-                response.status = "success";
-                response.result = result;
-            };
+            let UID = getSms.userId;
+            if (uid === UID) {
+                let result = await messageModel.deleteOne({
+                    _id: mid
+                });
+                if (result.deletedCount === 0) {
+                    response.status = "not found message";
+                } else if (result.deletedCount === 1) {
+                    response.status = "success";
+                };
+            } else {
+                response.status = "unauthorized";
+            }
         } catch (error) {
             response.status = "error";
             response.message = "Error al eliminar el mensaje - DAO: " + error.message;

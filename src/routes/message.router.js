@@ -14,12 +14,12 @@ msmRouter.post('/', passport.authenticate('jwt', {session: false}), rolesMiddlew
     };
 });
 
-msmRouter.get('/', async (req, res) => {
+msmRouter.get('/', passport.authenticate('jwt', {session: false}), rolesMiddlewareUser, async (req, res) => {
     const result = await messageController.getAllMessageController(req, res);
     res.status(result.statusCode).send(result);
 });
 
-msmRouter.delete('/:mid', async (req, res, next) => {
+msmRouter.delete('/:mid', passport.authenticate('jwt', {session: false}), rolesMiddlewareUser, async (req, res, next) => {
     const result = await messageController.deleteMessageController(req, res, next);
     if(result !== undefined) {
         res.status(result.statusCode).send(result);

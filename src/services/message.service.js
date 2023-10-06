@@ -15,7 +15,6 @@ export default class MessageService {
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Mensaje creado exitosamente.";
-                response.result = resultDAO.result;
             };
         } catch (error) {
             response.statusCode = 500;
@@ -46,20 +45,22 @@ export default class MessageService {
         return response;
     };
 
-    async deleteMessageService(mid) {
+    async deleteMessageService(mid, uid) {
         let response = {};
         try {
-            const resultDAO = await this.messageDao.deleteMessage(mid);
+            const resultDAO = await this.messageDao.deleteMessage(mid, uid);
             if (resultDAO.status === "error") {
                 response.statusCode = 500;
                 response.message = resultDAO.message;
             } else if (resultDAO.status === "not found message") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún mensaje con el ID ${mid}.`;
+            } else if (resultDAO.status === "unauthorized") {
+                response.statusCode = 403;
+                response.message = `Solo puedes eliminar los mensajes que tú hayas enviado, no puedes eliminar los mensajes de otros usuarios.`;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Mensaje eliminado exitosamente.";
-                response.result = resultDAO.result;
             };
         } catch (error) {
             response.statusCode = 500;
