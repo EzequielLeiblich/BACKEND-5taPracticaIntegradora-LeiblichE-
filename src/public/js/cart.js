@@ -145,6 +145,7 @@ function deleteToCart(products, productID) {
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         loadCartAndUpdate();
       })
       .catch(error => {

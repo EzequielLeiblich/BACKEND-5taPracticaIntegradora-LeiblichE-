@@ -13,21 +13,38 @@ extraForm.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
             },
         });
-        const json = await response.json();
-        if (!json.redirectTo) {
+        const res = await response.json();
+        const statusCodeRes = res.statusCode;
+        const messageRes = res.message;
+        const customError = res.cause;
+        console.log(res)
+        if (statusCodeRes === 200) {
+            extraForm.reset();
+            window.location.replace(res.redirectTo);
+        } else if (customError) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Error al completar el perfil',
+                text: customError || 'Error al completar el perfil. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 409) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error al completar el perfil',
+                text: messageRes || 'Error al completar el perfil. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 500) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error al completar el perfil',
-                text: json.message || 'Error al completar el perfil. Inténtalo de nuevo.',
+                text: messageRes || 'Error al completar el perfil. Inténtalo de nuevo.',
             });
-        } else if (response.ok) {
-            console.log('Perfil completado con éxito.');
-            extraForm.reset();
-            if (json.redirectTo) {
-                window.location.href = json.redirectTo;
-            }
         }
     } catch (error) {
-        console.log('Error en la solicitud:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error en la solicitud de register/login con GitHub',
+            text: 'Error: ' + error.message
+        });
     }
 });

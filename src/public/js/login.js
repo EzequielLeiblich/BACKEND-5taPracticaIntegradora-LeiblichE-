@@ -13,24 +13,43 @@ form.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
             },
         });
-        const json = await response.json();
-        if (response.ok) {
+        const res = await response.json();
+        const statusCodeRes = res.statusCode;
+        const messageRes = res.message;
+        const customError = res.cause;
+        if (statusCodeRes === 200) {
             form.reset();
-            if (json.role === "user") {
+            if (res.role === "user") {
                 window.location.replace('/products');
-            } else if (json.role === "premium") {
+            } else if (res.role === "premium") {
                 window.location.replace('/premiumView');
-            } else if (json.role === "admin") {
+            } else if (res.role === "admin") {
                 window.location.replace('/adminPanel');
             }
-        } else {
+        } else if (customError) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Error de inicio de sesión',
+                text: customError || 'Error en el login. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 404 || statusCodeRes === 409) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de inicio de sesión',
+                text: messageRes || 'Error en el login. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 500) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error de inicio de sesión',
-                text: json.message || 'Error en el inicio de sesión. Inténtalo de nuevo.',
+                text: messageRes || 'Error en el login. Inténtalo de nuevo.',
             });
         }
     } catch (error) {
-        console.log('Error en la solicitud:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error en la solicitud de login',
+            text: 'Error: ' + error.message
+        });
     }
 });

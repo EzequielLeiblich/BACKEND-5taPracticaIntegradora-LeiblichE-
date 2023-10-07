@@ -40,13 +40,13 @@ export const completeProfile = async (req, res, next) => {
         const existSessionControl = await sessionController.getUserController(req, res, email);
         if (existSessionControl.statusCode === 500) {
             res.send({
-                status: 500,
+                statusCode: 500,
                 message: existSessionControl.message
             });
         }
         else if (existSessionControl.statusCode === 200) {
             res.send({
-                status: 409,
+                statusCode: 409,
                 message: 'Ya existe una cuenta asociada a este correo. Diríjase al login y presione en "Ingresa aquí" para iniciar sesión.'
             });
         }
@@ -76,12 +76,16 @@ export const completeProfile = async (req, res, next) => {
                 })
                 res.send({
                     status: 'success',
+                    statusCode: 200,
                     redirectTo: '/products'
                 });
             };
         };
     } catch (error) {
         req.logger.error(error.message)
-        return ('Error al completar datos de session creada con GitHub - formExtra.js: ' + error.message);
+        res.send({
+            statusCode: 500,
+            message: 'Error al completar datos de session creada con GitHub - formExtra.js: ' + error.message
+        });
     };
 };

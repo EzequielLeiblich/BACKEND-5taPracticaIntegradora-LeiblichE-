@@ -6,7 +6,6 @@ formResetPass2.addEventListener('submit', async (e) => {
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
     try {
-
         const response = await fetch('/api/sessions/resetPassword', {
             method: 'POST',
             body: JSON.stringify(obj),
@@ -14,24 +13,41 @@ formResetPass2.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json',
             },
         });
-        const json = await response.json();
-
-        if (response.ok) {
+        const res = await response.json();
+        const statusCodeRes = res.statusCode;
+        const messageRes = res.message;
+        const customError = res.cause;
+        if (statusCodeRes === 200) {
             formResetPass2.reset();
             Swal.fire({
                 icon: 'success',
                 title: 'Contraseña actualizada.',
                 text: 'Su contraseña ya ha sido actualizada. Puede hacer click en “Iniciar sesión” para loguearse con su correo y nueva contraseña.',
             });
-        } 
-        else {
+        } else if (customError) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Error en el cambio de contraseña',
+                text: customError || 'Error en el login. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 400 || statusCodeRes === 404) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error en el cambio de contraseña',
+                text: messageRes || 'Error en el login. Inténtalo de nuevo.',
+            });
+        } else if (statusCodeRes === 500) {
             Swal.fire({
                 icon: 'error',
-                title: 'Error en el cambio de contraseña.',
-                text: json.cause || json.message || 'Ha ocurrido un error al intentar cambiar la contraseña.',
+                title: 'Error en el cambio de contraseña',
+                text: messageRes || 'Error en el login. Inténtalo de nuevo.',
             });
         }
     } catch (error) {
-        console.log('Error en la solicitud - Reset Password:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error en la solicitud - Reset Password',
+            text: 'Error: ' + error.message
+        });
     }
 })

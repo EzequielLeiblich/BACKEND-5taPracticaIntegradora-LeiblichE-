@@ -28,7 +28,7 @@ sessionRouter.get('/current', passport.authenticate('jwt', { session: false }), 
 sessionRouter.get('/profile', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), getProfileUser);
 
 // EMAIL RESET PASS:
-sessionRouter.post('/requestResetPassword', passport.authenticate('jwt', { session: false, failureRedirect: '/login'}), rolesMiddlewareUser, async (req, res, next) => {
+sessionRouter.post('/requestResetPassword', async (req, res, next) => {
     const result = await sessionController.getUserAndSendEmailController(req, res, next);
     if (result !== undefined) {
         res.status(result.statusCode).send(result);
@@ -36,7 +36,7 @@ sessionRouter.post('/requestResetPassword', passport.authenticate('jwt', { sessi
 });
 
 // RESET USER PASS:
-sessionRouter.post('/resetPassword', passport.authenticate('jwtResetPass', { session: false, failureRedirect: '/requestResetPassword' }), passport.authenticate('jwt', { session: false }), rolesMiddlewareUser, async (req, res, next) => {
+sessionRouter.post('/resetPassword', async (req, res, next) => {
     const result = await sessionController.resetPassUserController(req, res, next);
     if (result !== undefined) {
         res.status(result.statusCode).send(result);
@@ -45,11 +45,11 @@ sessionRouter.post('/resetPassword', passport.authenticate('jwtResetPass', { ses
 
 // LOGOUT:
 sessionRouter.post('/logout', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-    const result = await sessionController.logoutController(req, res, next);
-    if (result !== undefined) {
-        res.status(result.statusCode).send(result);
-    };
-}
+        const result = await sessionController.logoutController(req, res, next);
+        if (result !== undefined) {
+            res.status(result.statusCode).send(result);
+        };
+    }
 );
 
 // DELETE ACCOUNT:

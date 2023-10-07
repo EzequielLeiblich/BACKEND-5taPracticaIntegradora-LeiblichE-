@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { productsModel } from "./models/products.model.js";
+import { cartModel } from './models/carts.model.js'
 import config from "../../config.js";
 
 export default class ProductDAO {
@@ -81,15 +82,27 @@ export default class ProductDAO {
     async deleteProduct(pid) {
         let response = {};
         try {
-            const result = await productsModel.deleteOne({
-                _id: pid
-            });
-            if (result.deletedCount === 0) {
+            const result = await productsModel.findOne({ _id: pid });
+            if (result === null) {
                 response.status = "not found product";
-            } else if (result.deletedCount === 1) {
-                response.status = "success";
-                response.result = result;
-            };
+            } else {
+                const result2 = await productsModel.deleteOne({ _id: pid });
+                if (result2.deletedCount === 0) {
+                    response.status = "not found product";
+                } else if (result2.deletedCount === 1) {
+                    await cartModel.updateMany({
+                        'products.product': pid
+                    }, {
+                        $pull: {
+                            'products': {
+                                product: pid
+                            }
+                        }
+                    });
+                    response.status = "success";
+                    response.result = result;
+                };
+            }
         } catch (error) {
             response.status = "error";
             response.message = "Error al eliminar el producto - DAO: " + error.message;
@@ -100,11 +113,11 @@ export default class ProductDAO {
     async updateProduct(pid, updateProduct) {
         let response = {};
         try {
-            const result = await productsModel.updateOne({  _id: pid }, {  $set: updateProduct });
+            const result = await productsModel.updateOne({ _id: pid }, { $set: updateProduct });
             if (result.matchedCount === 0) {
                 response.status = "not found product";
             } else if (result.matchedCount === 1) {
-                if(result.modifiedCount === 0){
+                if (result.modifiedCount === 0) {
                     response.status = "update is equal to current";
                 } else if (result.modifiedCount === 1) {
                     response.status = "success";

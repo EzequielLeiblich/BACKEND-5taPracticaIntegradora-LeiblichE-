@@ -51,12 +51,12 @@ viewsRouter.get('/requestResetPassword', (req, res) => {
   })
 })
 
-viewsRouter.get('/resetPassword', passport.authenticate('jwtResetPass', {
+viewsRouter.get('/resetPasswordView', passport.authenticate('jwtResetPass', {
   session: false,
   failureRedirect: '/requestResetPassword'
 }), (req, res) => {
   res.render('resetPassword', {
-    title: 'Restablecer Contraseña'
+      title: 'Restablecer Contraseña'
   })
 })
 
