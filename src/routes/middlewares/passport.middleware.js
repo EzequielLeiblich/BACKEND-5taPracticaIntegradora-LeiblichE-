@@ -3,9 +3,8 @@ import passport from 'passport';
 import config from "../../config.js";
 
 import { CurrentUserDTO } from '../../controllers/DTO/user.dto.js'
-//
 import { createBDUserGH } from '../../config/gitHub.passport.js';
-//
+
 import ErrorEnums from "../../errors/error.enums.js";
 import CustomError from "../../errors/customError.class.js";
 import ErrorGenerator from "../../errors/error.info.js";

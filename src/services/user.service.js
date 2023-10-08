@@ -78,10 +78,10 @@ export default class SessionService {
                             role: newUser.result.role,
                             cart: newUser.result.cart,
                             userID: newUser.result._id
-                        }, envCoderSecret, {
+                        }, config.JWT_SECRET, {
                             expiresIn: '7d'
                         });
-                        res.cookie(envCoderTokenCookie, token, {
+                        res.cookie(config.JWT_COOKIE, token, {
                             httpOnly: true,
                             signed: true,
                             maxAge: 7 * 24 * 60 * 60 * 1000

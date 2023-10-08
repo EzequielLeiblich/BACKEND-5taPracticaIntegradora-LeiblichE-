@@ -1,5 +1,6 @@
 import SessionService from "../services/session.service.js";
 import mongoose from 'mongoose';
+import config from "../config.js";
 
 import ErrorEnums from "../errors/error.enums.js";
 import CustomError from "../errors/customError.class.js";
@@ -111,6 +112,10 @@ export default class SessionController {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 req.logger.debug(response.message);
+                res.cookie(config.RESET_PASSWORD_COOKIE, userEmail, {
+                    httpOnly: true,
+                    signed: true,
+                    maxAge:  3600 * 1000});
             };
         } catch (error) {
             response.statusCode = 500;
@@ -121,7 +126,7 @@ export default class SessionController {
     };
 
     async resetPassUserController(req, res, next) {
-        const userEmail = req.user.email;
+        const userEmail = req.signedCookies[config.RESET_PASSWORD_COOKIE]
         const newPass = req.body.newPassword
         const confirmPass = req.body.confirmPassword
         try {
