@@ -1,3 +1,4 @@
+// ADMIN
 export const rolesMiddlewareAdmin = (req, res, next) => {
     if(req.user.role === 'admin'){
         next()
@@ -6,6 +7,7 @@ export const rolesMiddlewareAdmin = (req, res, next) => {
     }
 }
 
+// ADMIN PREMIUM
 export const rolesMiddlewareAdminAndPremiun = (req, res, next) => {
     if(req.user.role === 'admin' || req.user.role === 'premium' ){
         next()
@@ -14,6 +16,7 @@ export const rolesMiddlewareAdminAndPremiun = (req, res, next) => {
     }
 }
 
+// USER PREMIUM
 export const rolesMiddlewareUserPremium = (req, res, next) => {
     if(req.user.role === 'premium'){
         next()
@@ -22,6 +25,7 @@ export const rolesMiddlewareUserPremium = (req, res, next) => {
     }
 }
 
+// USER & USER PREMIUM
 export const rolesMiddlewareUser = (req, res, next) => {
     if(req.user.role === 'user' || req.user.role === 'premium'){
         next()

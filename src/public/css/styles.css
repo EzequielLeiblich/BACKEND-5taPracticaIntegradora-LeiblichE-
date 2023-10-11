@@ -95,13 +95,6 @@ tbody {
   object-fit: scale-down;
 }
 
-
-.Imgs {
-  width: auto;
-  height: 17vh;
-  object-fit: scale-down;
-}
-
 .logoSession {
   display: flex;
   justify-content: space-between;
@@ -121,7 +114,7 @@ tbody {
 }
 
 .logoS{
-  height: 8vh;
+  margin-left: 2em !important;
 }
 
 .logoS:hover{
@@ -168,7 +161,7 @@ tbody {
   margin-top: 1em;
   margin-right: 1em;
   margin-left: 1em;
-  color: #775700;
+  color: #002877;
   font-family: 'Montserrat';
   font-size: 1.2em;
   padding: 0.5em;
@@ -198,20 +191,6 @@ tbody {
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-.divLogo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Session {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 2em;
 }
 
 .divLogoSession {
@@ -245,7 +224,6 @@ input {
   text-align: center;
   border-radius: 1em;
 }
-
 
 .boton {
   font-family: 'Montserrat';
@@ -296,13 +274,17 @@ a:hover {
 #conteProfi {
   display: flex;
   flex-direction: column;
-  -webkit-box-shadow: -1px 4px 67px 1px rgba(0,0,0,0.38);
-  -moz-box-shadow: -1px 4px 67px 1px rgba(0,0,0,0.38);
-  box-shadow: -1px 4px 67px 1px rgba(0,0,0,0.38);
-  width: 70vw;
+  justify-content: center;
+  align-items: center;
   padding: 1em;
-  border-radius: 2em;
-  height: 65vh;
+  width: 80vw;
+  height: 75vh;
+  margin: 1em auto;
+  background-color: #00000002;
+  -webkit-box-shadow: 1px 2px 20px 6px rgba(0, 0, 0, 0.103);
+  -moz-box-shadow: 1px 2px 20px 6px rgba(0, 0, 0, 0.103);
+  box-shadow: 1px 2px 20px 6px rgba(0, 0, 0, 0.13);
+  border-radius: 1em;
 }
 
 #profile {
@@ -370,7 +352,7 @@ a:hover {
   border-radius: 2em !important;
   backdrop-filter: blur(6px) !important;
   background: rgb(255 255 255 / 68%) !important;
-  border-bottom: 0.1em solid rgb(188 188 188 / 78%)!important;
+  border-bottom: 0.1em solid rgb(188 188 188 / 78%) !important;
 }
 
 .swal2-popup.swal2-toast {
@@ -396,7 +378,7 @@ div#swal2-html-container {
   color: black;
 }
 
-.swal2-container.swal2-top-end.swal2-backdrop-show{
+.swal2-container.swal2-top-end.swal2-backdrop-show {
   width: auto !important;
 }
 
@@ -458,6 +440,37 @@ body.swal2-shown.swal2-height-auto {
 .swal2-styled.swal2-cancel:hover {
   background-color: #9d9d9d;
   color: #ffffff;
+}
+
+#VistaDeCarga {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 5%;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: -2em;
+}
+
+.loader {
+  border: 4px solid #95d0f7;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  margin-top: 0.5em;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 

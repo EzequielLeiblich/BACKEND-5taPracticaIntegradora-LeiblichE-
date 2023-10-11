@@ -4,6 +4,10 @@ import { createHash } from "../utils.js";
 
 import SessionController from '../controllers/sessionController.js';
 
+import ErrorEnums from "../errors/error.enums.js";
+import CustomError from "../errors/customError.class.js";
+import ErrorGenerator from "../errors/error.info.js";
+
 let sessionController = new SessionController();
 
 export const completeProfile = async (req, res, next) => {

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import UserController from '../controllers/userController.js'
-import { rolesMiddlewareUser } from "./Middlewares/roles.middleware.js";
+import { rolesMiddlewareUser } from "./middlewares/roles.middleware.js";
 import { uploaderDocuments } from './middlewares/multer.middleware.js'
 
 const userRouter = Router();

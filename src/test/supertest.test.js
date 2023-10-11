@@ -60,7 +60,7 @@ describe('MECATRON REPUESTOS', () => {
             );
             currentUser = result.body;
         }).timeout(10000);
-        it('POST - /api/sessions/premium/:uid (Se debe cambiar el role del usaurio a premium)', async () => {
+        it('POST - /api/sessions/premium/:uid (Se debe cambiar el rol del usaurio a premium)', async () => {
             const result = await requester.post(`/api/sessions/premium/${currentUser.userId}`)
             expect(result.ok).to.be.ok;
             expect(result.body.statusCode).to.equal(200);
@@ -88,7 +88,7 @@ describe('MECATRON REPUESTOS', () => {
                 'price',
                 'stock',
                 'category',
-                'thumbnails',
+                'thumbnail',
                 "owner",
                 "__v")
             idProductCreateSuccess = result.body.result._id;

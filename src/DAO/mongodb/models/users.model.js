@@ -25,11 +25,19 @@ const UserSchema = new mongoose.Schema({
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'carts'
+        ref: 'carts',
     },
     role: {
         type: String,
         required: true
+    },
+    photo: {
+        type: String,
+        default: 'https://i.ibb.co/nnQFzM2/ADD-PHOTO-removebg-preview.png'
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'carts',
     },
     documents: {
         type: [{

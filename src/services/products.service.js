@@ -94,13 +94,39 @@ export default class ProductService {
                         response.result = resultDAO.result;
                     };
                 } else {
-                    response.statusCode = 401;
+                    response.statusCode = 403;
                     response.message = "Solo puedes eliminar los productos que te pertenecen.";
                 };
             };
         } catch (error) {
             response.statusCode = 500;
             response.message = "Error al eliminar el producto - Service: " + error.message;
+        };
+        return response;
+    };
+
+    async deleteAllPremiumProductService(uid, userRequestId, role) {
+        let response = {};
+        try {
+            if (role === "admin" || uid === userRequestId) {
+                const resultDAO = await this.productDao.deleteAllPremiumProduct(uid);
+                if (resultDAO.status === "error") {
+                    response.statusCode = 500;
+                    response.message = resultDAO.message;
+                } else if (resultDAO.status === "not found products") {
+                    response.statusCode = 404;
+                    response.message = `No se encontraron productos para eliminar.`;
+                } else if (resultDAO.status === "success") {
+                    response.statusCode = 200;
+                    response.message = resultDAO.message
+                };
+            } else { 
+                response.statusCode = 403;
+                response.message = "Solo puedes eliminar los productos que te pertenecen.";
+            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al eliminar todos los productos de usuario premium - Service: " + error.message;
         };
         return response;
     };
@@ -117,7 +143,6 @@ export default class ProductService {
                 response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
                 if (owner === "admin" || productInfo.result.owner === owner) {
-                    // Si el owner es admin o uindefined (Todos los productos antes de esta integración no tienen campo owner) puede actualizar cualquier producto. En el caso del user premium este solo puede actualizar los productos que le pertenezcan: 
                     const resultDAO = await this.productDao.updateProduct(pid, updateProduct);
                     if (resultDAO.status === "error") {
                         response.statusCode = 500;
@@ -134,7 +159,6 @@ export default class ProductService {
                         response.result = resultDAO.result;
                     };
                 } else {
-                    // Si el user premium que intenta actualizar un producto que no le pertenece se le deniega la actialización:
                     response.statusCode = 403;
                     response.message = "Solo puedes modificar los productos que te pertenecen.";
                 };

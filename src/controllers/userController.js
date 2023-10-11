@@ -9,58 +9,26 @@ export default class UserController {
     constructor() {
         this.userService = new UserService();
     }
-    // Métodos para UserController:
-    async changeRoleController(req, res, next) {
-        const uid = req.params.uid
-        try {
-            if (!uid || !mongoose.Types.ObjectId.isValid(uid)) {
-                CustomError.createError({
-                    name: "Error al obtener al usuario por ID.",
-                    cause: ErrorGenerator.generateUserIdInfo(uid),
-                    message: "El ID de usuario proporcionado no es válido.",
-                    code: ErrorEnums.INVALID_ID_USER_ERROR
-                });
-            }
-        } catch (error) {
-            return next(error);
-        };
-        let response = {};
-        try {
-            const resultService = await this.userService.changeRoleService( uid, res);
-            response.statusCode = resultService.statusCode;
-            response.message = resultService.message;
-            if (resultService.statusCode === 500) {
-                req.logger.error(response.message);
-            } else if (resultService.statusCode === 404) {
-                req.logger.warn(response.message);
-            } else if (resultService.statusCode === 200) {
-                req.logger.debug(response.message);
-            };
-        } catch (error) {
-            response.statusCode = 500;
-            response.message = "Error al modificar el rol del usuario - Controller: " + error.message;
-            req.logger.error(response.message);
-        };
-        return response;
-    };
-
+    // Métodos para UserController: 
     async uploadPremiumDocsController(req, res, next) {
         const uid = req.params.uid
         let rutaIdentification;
         let rutaProofOfAddres;
         let rutaBankStatement;
         const parteComun = 'public\\';
-        if (req.files.identification) {
+        if (req.files && req.files.identification) {
             const identification = req.files.identification[0].path;
             const indice = identification.indexOf(parteComun);
             const ruta = identification.substring(indice + parteComun.length);
             rutaIdentification = ruta
-        } if (req.files.proofOfAddress) {
+        }
+        if (req.files && req.files.proofOfAddress) {
             const proofOfAddress = req.files.proofOfAddress[0].path;
             const indice = proofOfAddress.indexOf(parteComun);
             const ruta = proofOfAddress.substring(indice + parteComun.length);
             rutaProofOfAddres = ruta
-        } if (req.files.bankStatement) {
+        }
+        if (req.files && req.files.bankStatement) {
             const bankStatement = req.files.bankStatement[0].path;
             const indice = bankStatement.indexOf(parteComun);
             const ruta = bankStatement.substring(indice + parteComun.length);
@@ -106,4 +74,39 @@ export default class UserController {
         };
         return response;
     };
+
+    async changeRoleController(req, res, next) {
+        const uid = req.params.uid
+        try {
+            if (!uid || !mongoose.Types.ObjectId.isValid(uid)) {
+                CustomError.createError({
+                    name: "Error al obtener al usuario por ID.",
+                    cause: ErrorGenerator.generateUserIdInfo(uid),
+                    message: "El ID de usuario proporcionado no es válido.",
+                    code: ErrorEnums.INVALID_ID_USER_ERROR
+                });
+            }
+        } catch (error) {
+            return next(error);
+        };
+        let response = {};
+        try {
+            const resultService = await this.userService.changeRoleService(res, uid);
+            response.statusCode = resultService.statusCode;
+            response.message = resultService.message;
+            if (resultService.statusCode === 500) {
+                req.logger.error(response.message);
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 422 ) {
+                req.logger.warn(response.message);
+            } else if (resultService.statusCode === 200) {
+                req.logger.debug(response.message);
+            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al modificar el rol del usuario - Controller: " + error.message;
+            req.logger.error(response.message);
+        };
+        return response;
+    };
+
 };

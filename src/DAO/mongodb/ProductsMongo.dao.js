@@ -109,6 +109,45 @@ export default class ProductDAO {
         };
         return response;
     };
+
+    async deleteAllPremiumProduct(uid) {
+        let response = {};
+        try {
+            const productsToDelete = await productsModel.find({
+                owner: uid
+            });
+            if (productsToDelete.length === 0) {
+                response.status = "not found products";
+            } else {
+                const productsPremiumPID = productsToDelete.map(producto => producto._id);
+                for (const pid of productsPremiumPID) {
+                    await cartModel.updateMany({
+                        'products.product': pid
+                    }, {
+                        $pull: {
+                            'products': {
+                                product: pid
+                            }
+                        }
+                    });
+                }
+                const result = await productsModel.deleteMany({
+                    owner: uid
+                });
+                if (result.deletedCount > 0) {
+                    response.status = "success";
+                    response.message = `Se han eliminaron ${result.deletedCount} productos asociados a la cuenta.`;
+                } else {
+                    response.status = "error";
+                    response.message = "No se pudieron eliminar los productos (deleteMany).";
+                }
+            }
+        } catch (error) {
+            response.status = "error";
+            response.message = "Error al eliminar todos los productos de usuario premium - DAO: " + error.message;
+        }
+        return response;
+    };
     
     async updateProduct(pid, updateProduct) {
         let response = {};

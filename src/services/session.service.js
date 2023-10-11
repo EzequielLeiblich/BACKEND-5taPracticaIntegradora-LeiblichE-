@@ -1,5 +1,6 @@
 import SessionDAO from "../DAO/mongodb/SessionMongo.dao.js";
 import CartService from "./carts.service.js";
+import ProductService from "./products.service.js";
 import Mail from '../email/nodemailer.js'
 import jwt from 'jsonwebtoken';
 import { createHash, isValidPassword } from "../utils.js";
@@ -9,6 +10,7 @@ export default class SessionService {
     constructor() {
         this.sessionDAO = new SessionDAO();
         this.cartService = new CartService();
+        this.productsService = new ProductService();
         this.mail = new Mail()
     }
     // Métodos UserService:
@@ -176,6 +178,45 @@ export default class SessionService {
         return response;
     };
 
+    async updateProfileSevice(req, res, uid, updateProfile) {
+        let response = {};
+        try {
+            const resultDAO = await this.sessionDAO.updateUser(uid, updateProfile);
+            if (resultDAO.status === "error") {
+                response.statusCode = 500;
+                response.message = resultDAO.message;
+            } else if (resultDAO.status === "not found user") {
+                response.statusCode = 404;
+                response.message = "Usuario no encontrado.";
+            } else if (resultDAO.status === "success") {
+                const newUser = await this.sessionDAO.getUser(uid);
+                if (newUser.status = "success") {
+                    let token = jwt.sign({
+                        email: newUser.result.email,
+                        first_name: newUser.result.first_name,
+                        role: newUser.result.role,
+                        cart: newUser.result.cart,
+                        userID: newUser.result._id
+                    }, config.JWT_SECRET, {
+                        expiresIn: '7d'
+                    });
+                    res.cookie(config.JWT_COOKIE, token, {
+                        httpOnly: true,
+                        signed: true,
+                        maxAge: 7 * 24 * 60 * 60 * 1000
+                    })
+                    response.statusCode = 200;
+                    response.message = "Usuario actualizado exitosamente.";
+                }
+            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al actualizar los datos del usuario - Service: " + error.message;
+        };
+        return response;
+    };
+
+
     async logoutService(req, res, uid) {
         let response = {};
         try {
@@ -205,7 +246,7 @@ export default class SessionService {
         return response;
     };
 
-    async deleteUserService(uid, cid) {
+    async deleteUserService(uid, cid, role) {
         let response = {};
         try {
             const resultDAO = await this.sessionDAO.deleteUser(uid);
@@ -216,11 +257,18 @@ export default class SessionService {
                 response.statusCode = 404;
                 response.message = `No se encontró ninguna cuenta con este ID, ${uid}.`;
             } else if (resultDAO.status === "success") {
-                const deleteCart = await this.cartService.deleteCartService(cid)
-                if (deleteCart.statusCode === 200) {
+                const deleteCart = await this.cartService.deleteCartService(cid);
+                const deleteUserProducts = await this.productsService.deleteAllPremiumProductService(uid, uid, role);
+                if (deleteCart.statusCode === "error" || deleteUserProducts.statusCode === "error") {
+                    response.statusCode = 500;
+                    response.message = "Error al eliminar la cuenta: " + deleteCart.message || deleteUserProducts.message;
+                } else if (deleteCart.statusCode === 200 && deleteUserProducts.statusCode === 404) {
                     response.statusCode = 200;
-                    response.message = "Cuenta eliminada exitosamente.";
-                };
+                    response.message = "Cuenta eliminada exitosamente. No se encontraron productos asociados a la cuenta.";
+                } else if (deleteCart.statusCode === 200 && deleteUserProducts.statusCode === 200) {
+                    response.statusCode = 200;
+                    response.message = "Cuenta eliminada exitosamente. " + deleteUserProducts.message;
+                }
             };
         } catch (error) {
             response.statusCode = 500;

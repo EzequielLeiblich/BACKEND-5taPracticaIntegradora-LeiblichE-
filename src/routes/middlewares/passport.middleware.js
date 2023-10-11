@@ -2,16 +2,15 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from "../../config.js";
 
-import { CurrentUserDTO } from '../../controllers/DTO/user.dto.js'
+import { CurrentUserDTO } from '../../controllers/DTO/user.dto.js';
 import { createBDUserGH } from '../../config/gitHub.passport.js';
 
 import ErrorEnums from "../../errors/error.enums.js";
 import CustomError from "../../errors/customError.class.js";
 import ErrorGenerator from "../../errors/error.info.js";
 
-// Middleware Registro:
+// Middleware Register:
 export const registerUser = (req, res, next) => {
-
     try {
         const userRegister = req.body;
         userRegister.age = parseInt(userRegister.age, 10);
@@ -33,7 +32,6 @@ export const registerUser = (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-
     passport.authenticate('register', {
         session: false
     }, (err, user, info) => {
@@ -50,11 +48,10 @@ export const registerUser = (req, res, next) => {
             user
         });
     })(req, res, next);
-
 };
 
+// Middleware Login:
 export const loginUser = (req, res, next) => {
-
     try {
         const userLogin = req.body;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,7 +65,6 @@ export const loginUser = (req, res, next) => {
     } catch (error) {
         return next(error);
     }
-
     passport.authenticate('login', {
         session: false
     }, (err, user, info) => {
@@ -103,6 +99,7 @@ export const loginUser = (req, res, next) => {
     })(req, res, next);
 };
 
+// Middleware GitHub:
 export const authenticateWithGitHub = (req, res, next) => {
     passport.authenticate('github', {
         session: false
@@ -134,15 +131,7 @@ export const authenticateWithGitHub = (req, res, next) => {
     })(req, res, next);
 };
 
+// Current:
 export const getCurrentUser = (req, res) => {
     res.send(new CurrentUserDTO(req.user));
-};
-
-export const getProfileUser = async (req, res) => {
-    const user = new CurrentUserDTO(req.user);
-    res.render('profile', {
-        title: 'Perfil',
-        user: user
-    });
-
 };

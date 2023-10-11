@@ -72,20 +72,22 @@ export default class SessionService {
                         response.statusCode = 200;
                         response.message = `Usuario actualizado exitosamente, su rol a sido actualizado a ${newRole}.`;
                         const newUser = await this.userDAO.getUser(uid);
-                        let token = jwt.sign({
-                            email: newUser.result.email,
-                            first_name: newUser.result.first_name,
-                            role: newUser.result.role,
-                            cart: newUser.result.cart,
-                            userID: newUser.result._id
-                        }, config.JWT_SECRET, {
-                            expiresIn: '7d'
-                        });
-                        res.cookie(config.JWT_COOKIE, token, {
-                            httpOnly: true,
-                            signed: true,
-                            maxAge: 7 * 24 * 60 * 60 * 1000
-                        })
+                        if (newUser.status = "success") {
+                            let token = jwt.sign({
+                                email: newUser.result.email,
+                                first_name: newUser.result.first_name,
+                                role: newUser.result.role,
+                                cart: newUser.result.cart,
+                                userID: newUser.result._id
+                            }, config.JWT_SECRET, {
+                                expiresIn: '7d'
+                            });
+                            res.cookie(config.JWT_COOKIE, token, {
+                                httpOnly: true,
+                                signed: true,
+                                maxAge: 7 * 24 * 60 * 60 * 1000
+                            })
+                        }
                     };
                 }
             };

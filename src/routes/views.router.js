@@ -21,6 +21,12 @@ viewsRouter.get('/chat', passport.authenticate('jwt', { session: false, failureR
   })
 });
 
+viewsRouter.get('/perfil',  passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), rolesMiddlewareUser, (req, res) => {
+  res.render('profile', {
+      title: 'Perfil'
+  })
+});
+
 viewsRouter.get('/register', (req, res) => {
   res.render('register', {
     title: 'Registro'
