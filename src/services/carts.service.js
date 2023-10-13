@@ -39,6 +39,10 @@ export default class CartService {
             } else if (resultDAO.status === "not found cart") {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún carrito con ID ${cid}.`;
+            } else if (resultDAO.status === "success" && resultDAO.delete) {
+                response.statusCode = 200;
+                response.message = `${resultDAO.delete} producto/s que tenías en tu carrito han sido eliminados`;
+                response.result = resultDAO.result;
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Carrito obtenido exitosamente.";
@@ -80,8 +84,8 @@ export default class CartService {
             if (product.statusCode === 500 || product.statusCode === 404) {
                 response.statusCode = product.statusCode;
                 response.message = product.message;
-            } else {
-                if (product.result.owner === undefined || !product.result.owner === userId) {
+            } else if (product.statusCode === 200) {
+                if (product.result.owner === "admin" || product.result.owner !== userId) {
                     const resultDAO = await this.cartDao.addProductToCart(cid, product.result, quantity);
                     if (resultDAO.status === "error") {
                         response.statusCode = 500;
@@ -94,8 +98,8 @@ export default class CartService {
                         response.message = "Producto agregado al carrito exitosamente.";
                         response.result = resultDAO.result;
                     };
-                } else if(product.result.owner === userId ){
-                    response.statusCode = 401;
+                } else if (product.result.owner === userId) {
+                    response.statusCode = 403;
                     response.message = "No puedes agregar tus propios productos a tu carrito.";
                 }
             };

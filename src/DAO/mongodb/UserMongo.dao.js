@@ -5,13 +5,12 @@ import config from "../../config.js";
 export default class UserDAO {
     connection = mongoose.connect(config.MONGO_URL);
 
-    async getUser(identifier) {
+    async getUser(uid) {
         let response = {};
         try {
-            const conditions = [{ email: identifier }, { first_name: identifier } ];
-            if (mongoose.Types.ObjectId.isValid(identifier)) { conditions.push({ _id: identifier });
-            }
-            const result = await userModel.findOne({ $or: conditions });
+            const result = await userModel.findOne({
+                _id: uid
+            });
             if (result === null) {
                 response.status = "not found user";
             } else {
@@ -87,6 +86,52 @@ export default class UserDAO {
         } catch (error) {
             response.status = "error";
             response.message = "Error al actualizar los datos de usuario - DAO: " + error.message;
+        };
+        return response;
+    };
+
+    async getAllUsers() {
+        let response = {};
+        try {
+            const users = await userModel.find({}, 'first_name email role last_connection').exec();
+            if (users.length === 0) {
+                response.status = "not found users";
+            } else {
+                response.status = "success";
+                response.result = users;
+            }
+        } catch (error) {
+            response.status = "error";
+            response.message = "Error al obtener los usuarios - DAO: " + error.message;
+        };
+        return response;
+    };
+
+    async deleteInactivityUsers() {
+        let response = {};
+        try {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - 2);
+            const cutoffDateString = `${cutoffDate.toLocaleDateString()} - ${cutoffDate.toLocaleTimeString()}`;
+            const inactiveUsers = await userModel.find({
+                last_connection: {
+                    $lt: cutoffDateString
+                }
+            }).exec();
+            if (inactiveUsers.length > 0) {
+                const deletedUserEmails = [];
+                response.status = "success";
+                response.result = deletedUserEmails;
+                for (const user of inactiveUsers) {
+                    await userModel.findByIdAndRemove(user._id);
+                    deletedUserEmails.push(user.first_name, user.email);
+                };
+            } else {
+                response.status = "not found inactivity users";
+            };
+        } catch (error) {
+            response.status = "error";
+            response.message = "Error al eliminar usuarios inactivos - DAO: " + error.message;
         };
         return response;
     };

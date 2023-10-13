@@ -33,13 +33,22 @@ export default class CartsDAO {
       if (result === null) {
         response.status = "not found cart";
       } else {
-        response.status = "success";
-        response.result = result;
+        const validProducts = result.products.filter(prod => prod.product !== null);
+        const removedProducts = result.products.filter(prod => prod.product === null);
+        if (validProducts.length < result.products.length) {
+          result.products = validProducts;
+          await result.save();
+          response.status = "success";
+          response.result = result;
+          response.delete = removedProducts.length;
+        } else {
+          response.status = "success";
+          response.result = result;
+        }
       }
     } catch (error) {
       response.status = "error";
-      response.message =
-        "Error al obtener el carrito por ID - DAO: " + error.message;
+      response.message = "Error al obtener el carrito por ID - DAO: " + error.message;
     }
     return response;
   }
@@ -65,39 +74,34 @@ export default class CartsDAO {
   async addProductToCart(cid, product, quantity) {
     let response = {};
     try {
-      const cart = await this.getCartById(cid);
-      if (cart.result === null) {
-        response.status = "not found cart";
-      } else {
-        const productID = product._id.toString();
-        const existingProductIndex = cart.result.products.findIndex(
-          (p) => p.product._id.toString() === productID
-        );
-        if (existingProductIndex !== -1) {
-          cart.result.products[existingProductIndex].quantity += parseInt(
-            quantity,
-            10
-          );
-          await cart.result.save();
-          response.status = "success";
-          response.result = cart;
+        const cart = await this.getCartById(cid);
+        if (cart.result === null) {
+            response.status = "not found cart";
         } else {
-          cart.result.products.push({
-            product: product,
-            quantity: quantity,
-          });
-          await cart.result.save();
-          response.status = "success";
-          response.result = cart;
+            const validProducts = cart.result.products.filter(item => item.product !== null);
+            const existingProductIndex = validProducts.findIndex(item => item.product._id.toString() === product._id.toString());
+            if (existingProductIndex !== -1) {
+                validProducts[existingProductIndex].quantity += parseInt(quantity, 10);
+                await cart.result.save();
+                response.status = "success";
+                response.result = cart;
+            } else {
+                validProducts.push({
+                    product: product,
+                    quantity: parseInt(quantity, 10)
+                });
+                cart.result.products = validProducts;
+                await cart.result.save();
+                response.status = "success";
+                response.result = cart;
+            }
         }
-      }
     } catch (error) {
-      response.status = "error";
-      response.message =
-        "Error al agregar el producto al carrito - DAO: " + error.message;
+        response.status = "error";
+        response.message = "Error al agregar el producto al carrito - DAO: " + error.message;
     }
     return response;
-  }
+}
 
   async addTicketToCart(cid, ticketID) {
     let response = {};

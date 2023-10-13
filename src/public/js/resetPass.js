@@ -32,7 +32,7 @@ formResetPass2.addEventListener('submit', async (e) => {
             });
         } else if (statusCodeRes === 400 || statusCodeRes === 404) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error en el cambio de contraseña',
                 text: messageRes || 'Error en el login. Inténtalo de nuevo.',
             });
@@ -49,5 +49,5 @@ formResetPass2.addEventListener('submit', async (e) => {
             title: 'Error en la solicitud - Reset Password',
             text: 'Error: ' + error.message
         });
-    }
-})
+    };
+});

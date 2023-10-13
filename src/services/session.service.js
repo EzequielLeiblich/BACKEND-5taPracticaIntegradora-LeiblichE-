@@ -118,12 +118,12 @@ export default class SessionService {
                             </td>
                     </tr>
                 </table>`;
-                const resultSendMail = await this.mail.sendMail(user, "Restablecimiento de contraseña.", html);
+                const resultSendMail = await this.mail.sendMail(user.email, "Restablecimiento de contraseña.", html);
                 if (resultSendMail.accepted.length > 0) {
                     response.statusCode = 200;
                     response.message = "Correo enviado exitosamente.";
                     response.result = resultSendMail;
-                } else {
+                } else if (resultSendMail.rejected && resultSendMail.rejected.length > 0){
                     response.statusCode = 500;
                     response.message = "Error al enviar el correo electrónico. Por favor, inténtelo de nuevo más tarde.";
                 };

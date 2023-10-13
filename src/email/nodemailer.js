@@ -12,10 +12,10 @@ export default class Mail {
             }
         })
     };
-    async sendMail(user, subject, html) {
+    async sendMail(email, subject, html) {
         let result = await this.transport.sendMail({
             from: config.AUTH_USER_TRANSPORT,
-            to: user.mail,
+            to: mail,
             subject,
             html
         });

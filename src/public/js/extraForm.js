@@ -17,7 +17,6 @@ extraForm.addEventListener('submit', async (e) => {
         const statusCodeRes = res.statusCode;
         const messageRes = res.message;
         const customError = res.cause;
-        console.log(res)
         if (statusCodeRes === 200) {
             extraForm.reset();
             window.location.replace(res.redirectTo);
@@ -29,7 +28,7 @@ extraForm.addEventListener('submit', async (e) => {
             });
         } else if (statusCodeRes === 409) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error al completar el perfil',
                 text: messageRes || 'Error al completar el perfil. Inténtalo de nuevo.',
             });

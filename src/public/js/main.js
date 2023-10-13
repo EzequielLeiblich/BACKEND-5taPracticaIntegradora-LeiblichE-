@@ -1,9 +1,15 @@
 const socket = io();
+const botomStore = document.getElementById("storeButtonPrem")
 
 fetch("/api/sessions/current")
   .then((response) => response.json())
   .then((data) => {
     let user = data;
+    if(user.role === "premium"){
+      let botnPrem = ""
+      botnPrem += `<a href="/store"><img src="https://i.ibb.co/Ptq3Y46/tienda.png" alt="login" border="0" class="logoS"></a>`
+      botomStore.innerHTML = botnPrem;
+    }
     Swal.fire({
       icon: "success",
       title: "¡Bienvenido!",
@@ -13,9 +19,7 @@ fetch("/api/sessions/current")
   .catch((error) => {
     console.error("Error al obtener los datos del usuario:", error);
   });
-
 const tableProd = document.getElementById("tableProd");
-
 function allProducts() {
   console.log("Primera carga - General");
   socket.on("products", (products) => {

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { productsModel } from "./models/products.model.js";
-import { cartModel } from './models/carts.model.js'
 import config from "../../config.js";
 
 export default class ProductDAO {
@@ -90,15 +89,6 @@ export default class ProductDAO {
                 if (result2.deletedCount === 0) {
                     response.status = "not found product";
                 } else if (result2.deletedCount === 1) {
-                    await cartModel.updateMany({
-                        'products.product': pid
-                    }, {
-                        $pull: {
-                            'products': {
-                                product: pid
-                            }
-                        }
-                    });
                     response.status = "success";
                     response.result = result;
                 };
@@ -119,24 +109,25 @@ export default class ProductDAO {
             if (productsToDelete.length === 0) {
                 response.status = "not found products";
             } else {
-                const productsPremiumPID = productsToDelete.map(producto => producto._id);
-                for (const pid of productsPremiumPID) {
-                    await cartModel.updateMany({
-                        'products.product': pid
-                    }, {
-                        $pull: {
-                            'products': {
-                                product: pid
-                            }
-                        }
-                    });
-                }
                 const result = await productsModel.deleteMany({
                     owner: uid
                 });
                 if (result.deletedCount > 0) {
-                    response.status = "success";
-                    response.message = `Se han eliminaron ${result.deletedCount} productos asociados a la cuenta.`;
+                    if (role === "admin") {
+                        const userEmail = productsToDelete[0].email;
+                        const deletedProducts = [];
+                        for (const product of productsToDelete) {
+                            const title = product.title;
+                            deletedProducts.push(title);
+                        }
+                        response.status = "success";
+                        response.userEmail = userEmail;
+                        response.deletedProducts = deletedProducts;
+                        response.message = `Se han eliminaron ${result.deletedCount} productos asociados a la cuenta.`;
+                    } else {
+                        response.status = "success";
+                        response.message = `Se han eliminaron ${result.deletedCount} productos asociados a la cuenta.`;
+                    }
                 } else {
                     response.status = "error";
                     response.message = "No se pudieron eliminar los productos (deleteMany).";

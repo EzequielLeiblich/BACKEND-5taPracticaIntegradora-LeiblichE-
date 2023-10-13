@@ -46,14 +46,14 @@ export default class UserController {
                 CustomError.createError({
                     name: "Error al subir documentación de usuario.",
                     cause: ErrorGenerator.uploadPremiumDocsErrorInfo(req.files.identification, req.files.proofOfAddress, req.files.bankStatement),
-                    message: "No se ha proporcionado ningun documento.",
+                    message: "La solicitud no incluye documentos para agregar o actualizar en este momento.",
                     code: ErrorEnums.INVALID_FORM_FILES_ERROR
                 });
             }
         } catch (error) {
             return next(error);
         };
-        const documentsRuta = [ rutaIdentification, rutaProofOfAddres, rutaBankStatement ];
+        const documentsRuta = [rutaIdentification, rutaProofOfAddres, rutaBankStatement];
         const documentNames = ["Identificación", "Comprobante de domicilio", "Comprobante de estado de cuenta"];
         let response = {};
         try {
@@ -64,7 +64,7 @@ export default class UserController {
                 req.logger.error(response.message);
             } else if (resultService.statusCode === 404) {
                 req.logger.warn(response.message);
-            } else if (resultService.statusCode === 206 || resultService.statusCode === 200 ) {
+            } else if (resultService.statusCode === 206 || resultService.statusCode === 200) {
                 req.logger.debug(response.message);
             };
         } catch (error) {
@@ -76,7 +76,8 @@ export default class UserController {
     };
 
     async changeRoleController(req, res, next) {
-        const uid = req.params.uid
+        const uid = req.params.uid;
+        const requesterRole = req.user.role;
         try {
             if (!uid || !mongoose.Types.ObjectId.isValid(uid)) {
                 CustomError.createError({
@@ -91,12 +92,12 @@ export default class UserController {
         };
         let response = {};
         try {
-            const resultService = await this.userService.changeRoleService(res, uid);
+            const resultService = await this.userService.changeRoleService(res, uid, requesterRole);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
                 req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 422 ) {
+            } else if (resultService.statusCode === 404 || resultService.statusCode === 422) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 req.logger.debug(response.message);
@@ -108,5 +109,50 @@ export default class UserController {
         };
         return response;
     };
+
+    async getAllUsersController(req, res) {
+        let response = {};
+        try {
+            const resultService = await this.userService.getAllUsersService();
+            response.statusCode = resultService.statusCode;
+            response.message = resultService.message;
+            if (resultService.statusCode === 500) {
+                req.logger.error(response.message);
+            } else if (resultService.statusCode === 404) {
+                req.logger.warn(response.message);
+            } else if (resultService.statusCode === 200) {
+                response.result = resultService.result;
+                req.logger.debug(response.message);
+            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al obtener los usuarios - Controller: " + error.message;
+            req.logger.error(response.message);
+        };
+        return response;
+    };
+
+    async deleteInactivityUsersController(req, res){
+        let response = {};
+        try {
+            const resultService = await this.userService.deleteInactivityUsersService();
+            response.statusCode = resultService.statusCode;
+            response.message = resultService.message;
+            if (resultService.statusCode === 500) {
+                req.logger.error(response.message);
+            } else if (resultService.statusCode === 404) {
+                req.logger.warn(response.message);
+            } else if (resultService.statusCode === 200) {
+                response.result = resultService.result;
+                req.logger.debug(response.message);
+            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al eliminar usuarios inactivos - Controller: " + error.message;
+            req.logger.error(response.message);
+        };
+        return response;
+    };
+
 
 };

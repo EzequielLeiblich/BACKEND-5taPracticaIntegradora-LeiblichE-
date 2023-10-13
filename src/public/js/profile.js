@@ -105,8 +105,8 @@ async function editarPerfil() {
         btnConfirmarCambios.addEventListener("click", () => {
             confirmarCambios(formEditProfile);
         });
-    }
-}
+    };
+};
 
 async function confirmarCambios(formEditProfile) {
     const data = new FormData(formEditProfile);
@@ -136,7 +136,7 @@ async function confirmarCambios(formEditProfile) {
             });
         } else if (statusCodeRes === 400) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Sin cambios',
                 text: messageRes || 'No se realizaron cambios en el perfil.',
             })
@@ -145,7 +145,7 @@ async function confirmarCambios(formEditProfile) {
             }, 2000);
         } else if (statusCodeRes === 404) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error al intentar cerrar session',
                 text: messageRes || 'Hubo un problema al intentar intentar actualizar perfil.',
             });
@@ -155,14 +155,14 @@ async function confirmarCambios(formEditProfile) {
                 title: 'Error al intentar cerrar session',
                 text: messageRes || 'Hubo un problema al intentar intentar actualizar perfil.',
             });
-        }
+        };
     } catch (error) {
         Swal.fire({
             icon: 'error',
             title: 'Error en la solicitud de editar perfil',
             text: 'Error: ' + error.message
         });
-    }
+    };
 };
 
 const btnCerrarSession = document.getElementById('btnCerrarSession');
@@ -196,7 +196,7 @@ async function cerrarSession() {
             });
         } else if (statusCode === 404) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error al intentar cerrar session',
                 text: message || 'Hubo un problema al intentar cerrar la session.',
             });
@@ -213,7 +213,7 @@ async function cerrarSession() {
             title: 'Error en la solicitud de cerrar session',
             text: 'Error: ' + error.message
         });
-    }
+    };
 };
 
 const btnCerrarCuenta = document.getElementById('btnCerrarCuenta');
@@ -257,7 +257,7 @@ async function cerrarCuenta() {
             });
         } else if (statusCode === 404) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error al intentar eliminar cuenta',
                 text: message || 'Hubo un problema al intentar eliminar la cuenta.',
             });
@@ -267,12 +267,12 @@ async function cerrarCuenta() {
                 title: 'Error al intentar eliminar cuenta',
                 text: message || 'Hubo un problema al intentar eliminar la cuenta.',
             });
-        }
+        };
     } catch (error) {
         Swal.fire({
             icon: 'error',
             title: 'Error en la solicitud de eliminar cuenta',
             text: 'Error: ' + error.message
         });
-    }
+    };
 };

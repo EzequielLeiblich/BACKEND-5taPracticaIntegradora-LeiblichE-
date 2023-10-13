@@ -34,7 +34,7 @@ form.addEventListener('submit', async (e) => {
             });
         } else if (statusCodeRes === 404 || statusCodeRes === 409) {
             Swal.fire({
-                icon: 'info',
+                icon: 'warning',
                 title: 'Error de inicio de sesión',
                 text: messageRes || 'Error en el login. Inténtalo de nuevo.',
             });

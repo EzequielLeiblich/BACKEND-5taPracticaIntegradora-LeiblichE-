@@ -135,7 +135,6 @@ export const initializePassportLocal = (req, res) => {
                 };
             }
         } catch (error) {
-            console.log(error)
             req.logger.error(error)
             return done(null, false, {
                 statusCode: 500,

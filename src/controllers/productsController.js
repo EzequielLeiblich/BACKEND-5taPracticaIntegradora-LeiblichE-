@@ -28,13 +28,17 @@ export default class ProductController {
         let response = {};
         try {
             const ownerRole = req.user.role;
-            let owner = ""
+            let owner = "";
+            let email = "";
             if (ownerRole === "premium") {
                 owner = req.user.userID;
+                email = req.user.email;
             } else if (ownerRole === "admin") {
                 owner = req.user.role;
+                email = null;
             }
             productData.owner = owner
+            productData.email = email;
             const resultService = await this.productService.createProductService(productData);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
@@ -134,20 +138,23 @@ export default class ProductController {
         };
         let response = {};
         try {
-            const ownerRole = req.user.role;
-            const owner = ownerRole === "premium" ? req.user.userID : ownerRole === "admin" ? req.user.role : undefined;
-            const resultService = await this.productService.deleteProductService(pid, owner);
-            response.statusCode = resultService.statusCode;
-            response.message = resultService.message;
-            if (resultService.statusCode === 500) {
-                req.logger.error(response.message);
-            } else if (resultService.statusCode === 404 || resultService.statusCode === 401) {
-                req.logger.warn(response.message);
-            } else if (resultService.statusCode === 200) {
-                const products = await this.productService.getAllProductsService();
-                req.socketServer.sockets.emit('products', products.result);
-                req.logger.debug(response.message);
-            };
+            if (req.user && req.user.role && req.user.email) {
+                const requesterRole = req.user.role;
+                const requester = requesterRole === "premium" ? req.user.email : requesterRole === "admin" ? req.user.role : undefined;
+                const resultService = await this.productService.deleteProductService(pid, requester);
+                response.statusCode = resultService.statusCode;
+                response.message = resultService.message;
+                if (resultService.statusCode === 500) {
+                    req.logger.error(response.message);
+                } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
+                    req.logger.warn(response.message);
+                } else if (resultService.statusCode === 200) {
+                    response.result = resultService.result;
+                    const products = await this.productService.getAllProductsService();
+                    req.socketServer.sockets.emit('products', products.result);
+                    req.logger.debug(response.message);
+                };
+            }
         } catch (error) {
             response.statusCode = 500;
             response.message = "Error al eliminar el producto - Controller: " + error.message;
