@@ -106,16 +106,15 @@ paths:
                   _id: '65076f078c081e93102f4d5d'
                   products:
                     - product:
-                        _id: '6490ab6c8190cc908b8911b6'
-                        title: 'Alienware - M17'
-                        description: 'EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.'
-                        code: 'ALWm17'
-                        price: 300
-                        stock: 0
-                        category: 'Laptop'
+                        _id: '64bd40168078ce452ea3b7c3'
+                        title: 'Bomba de agua SKF'
+                        description: 'Peugeot y Citroen'
+                        code: 'FA-001'
+                        price: 7500
+                        stock: 3
+                        category: 'Motor'
                         thumbnails:
-                          - 'https://i.ibb.co/YD9XHps/Alienware-M17-P1.png'
-                          - 'https://i.ibb.co/k3Lt1qh/Alienware-M17-P3.png'
+                          - 'https://http2.mlstatic.com/D_NQ_NP_873169-MLA41832295855_052020-O.webp'
                         __v: 0
                       quantity: 1
                       _id: '65093841093c16d2ae91c35a'
@@ -124,14 +123,14 @@ paths:
                         _id: '6509384c093c16d2ae91c371'
                         successfulProducts:
                           - quantity: 1
-                            title: 'ASUS - VA32UQ'
-                            price: 299
-                            _id: '6509384c093c16d2ae91c372'
+                            title: 'Bujía Bosch'
+                            price: 970
+                            _id: '64bd402a8078ce452ea3b7c5'
                         failedProducts:
                           - quantity: 1
-                            title: 'Alienware - M17'
-                            price: 300
-                            _id: '6509384c093c16d2ae91c373'
+                            title: 'Bomba de agua SKF'
+                            price: 7500
+                            _id: '64bd40168078ce452ea3b7c3'
                         purchase: 'user@gmail.com'
                         amount: 299
                         code: 'f0216be4-651c-4a9e-a866-51a2811ac0f8'
@@ -424,32 +423,31 @@ paths:
                     _id: '65076f078c081e93102f4d5d'
                     products:
                       - product:
-                          _id: '6490ab6c8190cc908b8911b6'
-                          title: 'Alienware - M17'
-                          description: 'EL MODELO M17 DE ALIENWARE, CUENTA CON UN PROCESADOR AMD RYZEN 7, UNA TARJETA GRÁFICA NVIDIA RTX 3070 TI, 16 GB DE MEMORIA RAM, UN ALMACENAMIENTO INTERNO DE 512GB Y UNA PANTALLA DE 17,30” A UNA RESOLUCIÓN DE 2560X1440.'
-                          code: 'ALWm17'
-                          price: 300
-                          stock: 0
-                          category: 'Laptop'
+                          _id: '64bd40168078ce452ea3b7c3'
+                          title: 'Bomba de agua SKF'
+                          description: 'Peugeot y Citroen'
+                          code: 'FA-001'
+                          price: 7500
+                          stock: 3
+                          category: 'Motor'
                           thumbnails:
-                            - 'https://i.ibb.co/YD9XHps/Alienware-M17-P1.png'
-                            - 'https://i.ibb.co/k3Lt1qh/Alienware-M17-P3.png'
+                            - 'https://http2.mlstatic.com/D_NQ_NP_873169-MLA41832295855_052020-O.webp'
                           __v: 0
-                        quantity: 4
+                        quantity: 1
                         _id: '65093841093c16d2ae91c35a'
                     tickets:
                       - ticketsRef:
                           _id: '6509384c093c16d2ae91c371'
                           successfulProducts:
                             - quantity: 1
-                              title: 'ASUS - VA32UQ'
-                              price: 299
-                              _id: '6509384c093c16d2ae91c372'
+                              title: 'Bujía Bosch'
+                              price: 970
+                              _id: '64bd402a8078ce452ea3b7c5'
                           failedProducts:
                             - quantity: 1
-                              title: 'Alienware - M17'
-                              price: 300
-                              _id: '6509384c093c16d2ae91c373'
+                              title: 'Bomba de agua SKF'
+                              price: 7500
+                              _id: '64bd40168078ce452ea3b7c3'
                           purchase: 'user@gmail.com'
                           amount: 299
                           code: 'f0216be4-651c-4a9e-a866-51a2811ac0f8'

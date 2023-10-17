@@ -73,6 +73,7 @@ export const loginUser = (req, res, next) => {
         }
         if (!user) {
             return res.status(info.statusCode).json({
+                statusCode: info.statusCode,
                 message: info.message
             });
         } else {

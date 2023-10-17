@@ -1,5 +1,6 @@
 import UserDAO from "../DAO/mongodb/UserMongo.dao.js";
 import ProductService from "../services/products.service.js"
+import CartService from '../services/carts.service.js'
 import jwt from 'jsonwebtoken';
 import Mail from "../email/nodemailer.js";
 import config from "../config.js";
@@ -8,6 +9,7 @@ export default class SessionService {
     constructor() {
         this.userDAO = new UserDAO();
         this.productService = new ProductService();
+        this.cartService = new CartService();
         this.mail = new Mail();
     }
 
@@ -137,7 +139,7 @@ export default class SessionService {
         return response;
     };
 
-    async deleteInactivityUsersService() {
+    async deleteInactivityUsersService(adminRole) {
         let response = {};
         try {
             const resultDAO = await this.userDAO.deleteInactivityUsers();
@@ -148,13 +150,35 @@ export default class SessionService {
                 response.statusCode = 404;
                 response.message = "No se han encontrado usuarios inactivos.";
             } else if (resultDAO.status === "success") {
-                const user = [];
-                for (let i = 0; i < resultDAO.result.length; i += 2) {
-                    user.push([resultDAO.result[i], resultDAO.result[i + 1]]);
-                }
+                let cartDeletedError = [];
+                let cartDeletedSuccess = [];
+                let productsDeletedError = [];
+                let productsDeletedSuccess = [];
                 let envioExitoso = [];
                 let envioFallido = [];
-                for (const [name, email] of user) {
+                for (let i = 0; i < resultDAO.result.length; i ++) {
+                    const user = resultDAO.result[i];
+                    let name = user[0];
+                    let email = user[1];
+                    let uid = user[2].toString();
+                    let cid = user[3].toString();
+                    let userRole = user[4];
+                    let deleteCart = await this.cartService.deleteCartService(cid);
+                    if (deleteCart) {
+                        if (deleteCart.statusCode === "error") {
+                            cartDeletedError.push(" " + email);
+                        } else if (deleteCart.statusCode === 200) {
+                            cartDeletedSuccess.push(" " + email)
+                        }
+                    }
+                    if (userRole === "premium") {
+                        let deleteUserProducts = await this.productsService.deleteAllPremiumProductService(uid, uid, adminRole);
+                        if (deleteUserProducts.statusCode === "error") {
+                            productsDeletedError.push(" " + email);
+                        } else if (deleteUserProducts.statusCode === 404 || deleteUserProducts.statusCode === 200) {
+                            productsDeletedSuccess.push(" " + email)
+                        }
+                    };
                     const html = `
                     <table cellspacing="0" cellpadding="0" width="100%">
                         <tr>
@@ -180,20 +204,52 @@ export default class SessionService {
                             </td>
                         </tr>
                     </table>`
-                    const resultSendMail = await this.mail.sendMail(email, "Notificación de eliminación de cuenta", html);
-                    if (resultSendMail.accepted.length > 0) {
-                        envioExitoso.push(email);
-                    } else if (resultSendMail.rejected && resultSendMail.rejected.length > 0) {
-                        envioFallido.push(email);
+                    if (email) {
+                        let resultSendMail = await this.mail.sendMail(email, "Notificación de eliminación de cuenta", html);
+                        if (resultSendMail.accepted.length > 0) {
+                            envioExitoso.push(" " + email);
+                        } else if (resultSendMail.rejected && resultSendMail.rejected.length > 0) {
+                            envioFallido.push(" " + email);
+                        };
                     };
                 };
-                if (envioFallido.length === 0) {
+                if (envioFallido.length === 0 && cartDeletedError.length === 0 && productsDeletedError.length === 0) {
+                    let result = {};
+                    if (envioExitoso.length > 0) {
+                        result.envioExitoso = "Usuarios eliminados y notificados:" + envioExitoso + "."
+                    }
+                    if (cartDeletedSuccess.length > 0) {
+                        result.cartDeletedSuccess = "Se han eliminado los carritos de los siguientes usuarios:" + cartDeletedSuccess + "."
+                    }
+                    if (productsDeletedSuccess.length > 0) {
+                        result.productsDeletedSuccess = "Se han eliminado los productos de los siguiente usuarios premium:" + productsDeletedSuccess + "."
+                    }
                     response.statusCode = 200;
-                    response.message = "Usuarios inactivos eliminados y notificados exitosamente.";
-                    response.result = "Correos de usuarios eliminados: " + envioExitoso;
-                } else {
+                    response.message = "Usuarios inactivos eliminados exitosamente.";
+                    response.result = result
+                } else if (envioFallido.length > 0 || cartDeletedError.length > 0 || productsDeletedError.length > 0) {
+                    let result = {}
+                    if (envioExitoso.length > 0) {
+                        result.envioExitoso = "Usuarios eliminados y notificados:" + envioExitoso + "."
+                    }
+                    if (cartDeletedSuccess.length > 0) {
+                        result.cartDeletedSuccess = "Se han eliminado los carritos de los siguientes usuarios:" + cartDeletedSuccess + "."
+                    }
+                    if (productsDeletedSuccess.length > 0) {
+                        result.productsDeletedSuccess = "Se han eliminado los productos de los siguiente usuarios premium:" + productsDeletedSuccess + "."
+                    }
+                    if (envioFallido.length > 0) {
+                        result.usersNotNotified = "Usuarios elminimados y no se han sido notificados:" + envioFallido + "."
+                    }
+                    if (cartDeletedError.length > 0) {
+                        result.cartDeletedError = "Usuarios cuyos carrito no se ha podido eliminar:" + cartDeletedError + "."
+                    }
+                    if (productsDeletedError.length > 0) {
+                        result.productsDeletedError = "Usuarios cuyos productos no se ha podido eliminar:" + productsDeletedError + "."
+                    }
                     response.statusCode = 500;
-                    response.message = "Error al enviar los correos de notificación. Usuarios a los que no se ha podido notificar: " + envioFallido;
+                    response.message = "Ha ocurrido un error en la eliminacion de uno o mas usuarios.";
+                    response.result = result;
                 };
             };
         } catch (error) {
@@ -202,5 +258,4 @@ export default class SessionService {
         };
         return response;
     };
-
-}
+};

@@ -88,7 +88,7 @@ describe('MECATRON REPUESTOS', () => {
                 'price',
                 'stock',
                 'category',
-                'thumbnail',
+                'thumbnails',
                 "owner",
                 "__v")
             idProductCreateSuccess = result.body.result._id;

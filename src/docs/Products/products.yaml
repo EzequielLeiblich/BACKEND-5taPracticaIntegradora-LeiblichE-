@@ -22,7 +22,7 @@ paths:
                 - 'price'
                 - 'stock'
                 - 'category'
-                - 'thumbnail'
+                - 'thumbnails'
               properties:
                 title:
                   type: 'string'
@@ -55,7 +55,8 @@ paths:
               price: 1599
               stock: 10
               category: 'Electricidad'
-              thumbnail: 'https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp'
+              thumbnails: 
+                - https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp
       responses:
         '200':
           description: 'SUCCESS - Producto creado exitosamente:'
@@ -71,7 +72,8 @@ paths:
                   price: 1599
                   stock: 10
                   category: 'Electricidad'
-                  thumbnail: 'https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp'
+                  thumbnails: 
+                    - https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp
                   owner: admin
                   _id: '6507dfccc22dba0cffba0a68'
                   __v: 0
@@ -148,7 +150,8 @@ paths:
                       price: 5300
                       stock: 20
                       category: 'Limpieza'
-                      thumbnails: 'https://store.upsangel.com/wp-content/uploads/2019/05/81JJmRj19yL._SX425_1.jpg'
+                      thumbnails: 
+                        - 'https://store.upsangel.com/wp-content/uploads/2019/05/81JJmRj19yL._SX425_1.jpg'
                       __v: 0
                     - _id: '64bd402a8078ce452ea3b7c5'
                       title: 'Bujía Bosch'
@@ -157,7 +160,8 @@ paths:
                       price: 970
                       stock: 60
                       category: 'Motor'
-                      thumbnail: 'https://http2.mlstatic.com/D_NQ_NP_884061-MLA31909890241_082019-O.webp'
+                      thumbnails: 
+                        - 'https://http2.mlstatic.com/D_NQ_NP_884061-MLA31909890241_082019-O.webp'
                       __v: 0
                   totalDocs: 78
                   limit: 2
@@ -215,7 +219,8 @@ paths:
                   price: 1599
                   stock: 10
                   category: 'Electricidad'
-                  thumbnail: 'https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp'
+                  thumbnails: 
+                    - https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp
                   owner: admin
                   __v: 0
         '400':
@@ -371,7 +376,8 @@ paths:
                 price: 99999.99
                 stock: 99
                 category: 'Repuestos'
-                thumbnail: 'https://www.uba.ar/internacionales/archivos/TEST.jpg'
+                thumbnails: 
+                  - 'https://www.uba.ar/internacionales/archivos/TEST.jpg'
       responses:
         '200':
           description: 'SUCCESS - Producto actualizado exitosamente:'

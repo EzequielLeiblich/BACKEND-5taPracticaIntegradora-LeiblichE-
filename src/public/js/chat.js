@@ -1,14 +1,3 @@
-const carga = document.getElementById("VistaDeCarga");
-const vista = document.getElementById("contenedorVista");
-
-function pantallaCarga() {
-    setTimeout(() => {
-        carga.style = "display: none";
-        vista.style = "display: block";
-    }, 4000);
-};
-pantallaCarga();
-
 const socket = io();
 const chatTable = document.getElementById('chat-table');
 const btnEnviar = document.getElementById('btnEnv');
@@ -57,16 +46,29 @@ async function deleteMessage(messageId) {
         const response = await fetch(`/api/chat/${messageId}`, {
         method: 'DELETE',
         })
+        if (response.redirected) {
+            const invalidTokenURL = response.url;
+            window.location.replace(invalidTokenURL);
+        }
         const res = await response.json();
         const statusCode = res.statusCode;
         const message = res.message;
         const customError = res.cause;
-        if (statusCode === 200) {
+        if(statusCode === 401){
+            Swal.fire({
+            title: res.h1,
+            text: res.message,
+            imageUrl: res.img,
+            imageWidth: 70,
+            imageHeight: 70,
+            imageAlt: res.h1,
+        })
+        } else if (statusCode === 200) {
         Swal.fire({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 550000,
+            timer: 5000,
             title: message || 'El mensaje fue eliminado con éxito.',
             icon: 'success'
         });

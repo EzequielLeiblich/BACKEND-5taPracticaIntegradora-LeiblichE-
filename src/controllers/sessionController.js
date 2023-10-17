@@ -173,7 +173,7 @@ export default class SessionController {
             const pathPhotoProfile = req.file.path;
             const indice = pathPhotoProfile.indexOf(parteComun);
             const ruta = pathPhotoProfile.substring(indice + parteComun.length);
-            rutaPhotoProfile = ruta
+            rutaPhotoProfile = `${ruta}`
         }
         let updateProfile = {};
         if (newName) {

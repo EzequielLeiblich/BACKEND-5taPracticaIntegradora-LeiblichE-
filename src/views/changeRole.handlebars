@@ -54,5 +54,25 @@
         </div>
     </div>
 </div>
+<script>
+    const archivoInputIdent = document.getElementById('identification');
+    const archivoInputDomi = document.getElementById('proofOfAddress');
+    const archivoInputBank = document.getElementById('bankStatement');
+    const nombreArchivo1 = document.getElementById('nombreArchivo1');
+    const nombreArchivo2 = document.getElementById('nombreArchivo2');
+    const nombreArchivo3 = document.getElementById('nombreArchivo3');
+    archivoInputIdent.addEventListener('change', () => {
+        const archivos = archivoInputIdent.files;
+        nombreArchivo1.textContent = archivos[0].name;
+    })
+    archivoInputDomi.addEventListener('change', () => {
+        const archivos = archivoInputDomi.files;
+        nombreArchivo2.textContent = archivos[0].name;
+    })
+    archivoInputBank.addEventListener('change', () => {
+        const archivos = archivoInputBank.files;
+        nombreArchivo3.textContent = archivos[0].name;
+    })
+</script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/changeRole.js"></script>

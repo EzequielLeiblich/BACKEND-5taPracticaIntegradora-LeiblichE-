@@ -12,12 +12,31 @@ export default class ProductController {
     // Métodos ProductController:
     async createProductController(req, res, next) {
         const productData = req.body;
+        let rutaImg1;
+        let rutaImg2;
+        const parteComun = 'public\\';
+        if (req.files && req.files.Img1) {
+            const Img1 = req.files.Img1[0].path;
+            const indice = Img1.indexOf(parteComun);
+            const ruta = Img1.substring(indice + parteComun.length);
+            rutaImg1 = ruta
+        };
+        if (req.files && req.files.Img2[0].path) {
+            const Img2 = req.files.Img2[0].path;
+            const indice = Img2.indexOf(parteComun);
+            const ruta = Img2.substring(indice + parteComun.length);
+            rutaImg2 = ruta
+        };
+        const price = parseFloat(productData.price);
+        const stock = parseFloat(productData.stock);
         try {
-            if (!productData.title || typeof productData.title === 'number' || !productData.description || typeof productData.description === 'number' || !productData.code || typeof productData.code === 'number' || !productData.price || typeof productData.price === 'string' || productData.price <= 0 || !productData.stock || typeof productData.stock === 'string' || productData.stock <= 0 || !productData.category || typeof productData.category === 'number' || !productData.thumbnails || Object.keys(productData).length === 0)
-            {
+            if (!productData.title || typeof productData.title === 'number' || !productData.description || typeof productData.description === 'number' ||
+                !productData.code || typeof productData.code === 'number' || !price || typeof price === 'string' || price <= 0 ||
+                !stock || typeof stock === 'string' || stock <= 0 || !productData.category || typeof productData.category === 'number' ||
+                rutaImg1 === undefined || Object.keys(productData).length === 0) {
                 CustomError.createError({
                     name: "Error al crear el nuevo producto.",
-                    cause: ErrorGenerator.generateProductDataErrorInfo(productData),
+                    cause: ErrorGenerator.generateProductDataErrorInfo(productData, rutaFrontImg, rutaBackImg),
                     message: "La información para crear el producto está incompleta o no es válida.",
                     code: ErrorEnums.INVALID_PRODUCT_DATA
                 });
@@ -27,6 +46,16 @@ export default class ProductController {
         };
         let response = {};
         try {
+            let thumbnails = [];
+            thumbnails.push({
+                name: "Img 1",
+                reference: `${rutaImg1}`
+            });
+            thumbnails.push({
+                name: "Img 2",
+                reference: `${rutaImg2}`
+            });
+            productData.thumbnail = thumbnail;
             const ownerRole = req.user.role;
             let owner = "";
             let email = "";

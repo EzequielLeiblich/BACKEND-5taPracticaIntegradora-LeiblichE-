@@ -5,9 +5,9 @@ fetch("/api/sessions/current")
   .then((response) => response.json())
   .then((data) => {
     let user = data;
-    if(user.role === "premium"){
+    if (user.role === "premium") {
       let botnPrem = ""
-      botnPrem += `<a href="/store"><img src="https://i.ibb.co/Ptq3Y46/tienda.png" alt="login" border="0" class="logoS"></a>`
+      botnPrem += `<a href="/storeProducts"><img src="https://i.ibb.co/Ptq3Y46/tienda.png" alt="login" border="0" class="logoS"></a>`
       botomStore.innerHTML = botnPrem;
     }
     Swal.fire({
@@ -30,7 +30,8 @@ function allProducts() {
       <tr>
           <th>Modelo</th>
           <th>Descripción</th>
-          <th>Img</th>
+          <th>Img1</th>
+          <th>Img1</th>
           <th>Stock</th>
           <th>Precio</th>
           <th>Unids. a comprar</th>
@@ -42,7 +43,8 @@ function allProducts() {
           <tr>
             <td id="${product.title}">${product.title}</td>
             <td class="description">${product.description}</td>
-            <td><img src="${product.thumbnail}" alt="${product.title}" class="Img"></td>
+            <td><img src="${product.thumbnails[0].reference}" alt="${product.title}" class="Imgs"></td>
+            <td><img src="${product.thumbnails[1].reference}" alt="${product.title}" class="Imgs"></td>
             <td>${product.stock} Und.</td>
             <td>$${product.price}</td>
             <td><input type="number" id="cantidadInput${product._id}" min="1" max="${product.stock}" value="1"></td>
@@ -69,6 +71,12 @@ function allProducts() {
       const response = await fetch('/api/sessions/current', {
         method: 'GET',
       })
+      if (response.redirected) {
+        const newURL = response.url;
+        console.log('Se redirigió a:', newURL);
+        window.location.replace(newURL);
+      }
+    
       const res = await response.json();
       let user = res;
       const cartID = user.cart;

@@ -22,9 +22,17 @@ const ProductsSchema = new mongoose.Schema(
             required: true,
             default: true
         },
-        thumbnail: {
-            type: String,
-            required: true
+        thumbnails: {
+            type: [{
+                name: {
+                    type: String,
+                    required: true
+                },
+                reference: {
+                    type: String,
+                    required: true
+                }
+            }]
         },
         code: {
             type: String,

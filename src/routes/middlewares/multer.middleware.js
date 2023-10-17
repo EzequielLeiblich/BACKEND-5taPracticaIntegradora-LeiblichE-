@@ -5,9 +5,9 @@ import {logger} from '../../logs/logger.config.js'
 
 export const prodImgStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const folder = file.fieldname === 'frontImg' ? 'Front Imgs' :
-            file.fieldname === 'backImg' ? 'Back Imgs' : 'unknown';
-        cb(null, __dirname + '/public/img/products' + folder);
+        const folder = file.fieldname === 'Img' ? 'Img' :
+            file.fieldname === 'Img' ? 'Img' : 'unknown';
+        cb(null, __dirname + '/public/img/products/' + folder);
     },
     filename: function (req, file, cb) {
         cb(null, uuidV4() + " - " + file.originalname)

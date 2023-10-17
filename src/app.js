@@ -22,7 +22,8 @@ import viewsRouter from "./routes/views.router.js";
 import msmRouter from "./routes/message.router.js";
 import ticketRouter from "./routes/ticket.router.js";
 import mockRouter from "./routes/mock.router.js";
-import loggerRouter from './routes/loggerTest.router.js'
+import loggerRouter from './routes/loggerTest.router.js';
+import stripeRouter from './routes/stripe.router.js'
 
 // IMPORTS CONTROLLERS
 
@@ -43,6 +44,10 @@ import { initializePassportJWT } from "./config/jwt.passport.js";
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 
+// CORS
+
+import cors from 'cors'
+
 // SERVER EXPRESS
 
 const app = express();
@@ -53,6 +58,10 @@ const connection = mongoose.connect(config.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+// CORS
+
+app.use(cors())
 
 // MIDDLEWARES
 
@@ -143,3 +152,4 @@ app.use("/api/products", productsRouter);
 app.use("/api/tickets", ticketRouter);
 app.use("/mockProducts", mockRouter);
 app.use('/loggerTest', loggerRouter);
+app.use('/api/payments', stripeRouter);

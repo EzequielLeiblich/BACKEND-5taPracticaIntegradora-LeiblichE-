@@ -1,45 +1,68 @@
 import { Router } from 'express';
 import passport from 'passport';
-import { rolesMiddlewareAdmin, rolesMiddlewareUserPremium, rolesMiddlewareUser } from "./middlewares/roles.middleware.js";
+import { rolesVMiddlewareAdmin, rolesVMiddlewareUsers, rolesVMiddlewareAdminAndPremium } from './middlewares/rolesView.middleware.js'
+
 const viewsRouter = Router();
 
-viewsRouter.get('/products', passport.authenticate('jwt', {session: false, failureRedirect: '/login'}), (req, res) => {
+viewsRouter.get('/invalidToken', (req, res) => {
+  res.render('invalidToken', {
+      title: 'Acceso denegado - Token vencido'
+  })
+})
+
+viewsRouter.get('/products', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareUsers, (req, res) => {
   res.render('products', {
-    title: 'Productos'
+      title: 'Productos'
   })
 });
 
-viewsRouter.get('/cart', (req, res) => {
+viewsRouter.get('/cart', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareUsers, (req, res) => {
   res.render('cart', {
-    title: 'Carrito'
+      title: 'Carrito de Compras'
   });
 });
 
-viewsRouter.get('/chat', passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), rolesMiddlewareUser, (req, res) => {
+viewsRouter.get('/chat', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareUsers, (req, res) => {
   res.render('chat', {
-    title: 'Chat'
+      title: 'Chat'
   })
 });
 
-viewsRouter.get('/perfil',  passport.authenticate('jwt', { session: false, failureRedirect: '/login' }), rolesMiddlewareUser, (req, res) => {
+viewsRouter.get('/perfil', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}),rolesVMiddlewareUsers, (req, res) => {
   res.render('profile', {
       title: 'Perfil'
   })
 });
 
+
 viewsRouter.get('/register', (req, res) => {
   res.render('register', {
-    title: 'Registro'
+      title: 'Registro'
   });
 });
 
 viewsRouter.get('/login', (req, res) => {
   res.render('login', {
-    title: 'Iniciar Sesión'
+      title: 'Iniciar Sesión'
   });
 });
 
-viewsRouter.get('/changeRole', (req, res) => {
+viewsRouter.get('/changeRole', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareUsers, (req, res) => {
   res.render('changeRole', {
       title: 'Cambiar Role'
   })
@@ -47,7 +70,7 @@ viewsRouter.get('/changeRole', (req, res) => {
 
 viewsRouter.get('/completeProfile', (req, res) => {
   res.render('extraForm', {
-    title: 'Formulario'
+      title: 'Formulario'
   })
 });
 
@@ -67,18 +90,20 @@ viewsRouter.get('/resetPasswordView', passport.authenticate('jwtResetPass', {
 })
 
 viewsRouter.get('/adminPanel', passport.authenticate('jwt', {
-  session: false
-}), rolesMiddlewareAdmin, (req, res) => {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareAdmin, (req, res) => {
   res.render('userAdmin', {
-    title: 'Panel de administrador'
+      title: 'Panel de administrador'
   })
 })
 
-viewsRouter.get('/premiumView', passport.authenticate('jwt', {
-  session: false
-}), rolesMiddlewareUserPremium, (req, res) => {
-  res.render('userPremium', {
-    title: 'Premium View'
+viewsRouter.get('/storeProducts', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesVMiddlewareAdminAndPremium, (req, res) => {
+  res.render('store', {
+      title: 'Publicar productos'
   })
 })
 

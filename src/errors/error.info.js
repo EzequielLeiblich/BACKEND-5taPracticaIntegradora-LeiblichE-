@@ -40,7 +40,7 @@ export default class ErrorGenerator {
 
     // PRODUCTS:
 
-    static generateProductDataErrorInfo(productData) {
+    static generateProductDataErrorInfo(productData, rutaImg) {
         return `Una o más propiedades en los datos del producto están faltando o no son válidas.
         Propiedades requeridas:
         * title: Debe ser un texto no vacío, recibido ${productData.title}.
@@ -49,7 +49,7 @@ export default class ErrorGenerator {
         * price: Debe ser un número positivo mayor que 0, recibido ${productData.price}.
         * stock: Debe ser un número positivo mayor que 0, recibido ${productData.stock}.
         * category: Debe ser un texto no vacío, recibido ${productData.category}.
-        * thumbnail: Debe ser un arreglo no vacío de URL de imágen, recibido ${productData.thumbnail}.
+        * img: Debe ser un archivo de imagen, se recibió ${ rutaImg }.;
         `;
     }
 

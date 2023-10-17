@@ -238,9 +238,9 @@ export default class CartsDAO {
             response.status = "success";
             response.result = {
               productId: pid,
-              newQuantity: product.quantity,
+              newQuantity: product.quantity
             };
-          }
+          };
         }
       }
     } catch (error) {

@@ -7,7 +7,9 @@
     "status": true,
     "stock": 3,
     "category": "Motor",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_873169-MLA41832295855_052020-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_873169-MLA41832295855_052020-O.webp"
+    ],
     "id": "64bd40168078ce452ea3b7c3"
 },
 {
@@ -18,7 +20,9 @@
     "status": true,
     "stock": 60,
     "category": "Motor",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_884061-MLA31909890241_082019-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_884061-MLA31909890241_082019-O.webp"
+    ],
     "id": "64bd402a8078ce452ea3b7c5"
 },
 {
@@ -29,7 +33,9 @@
     "status": true,
     "stock": 5,
     "category": "Electricidad",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_691388-MLA51840548559_102022-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_691388-MLA51840548559_102022-O.webp"
+    ],
     "id": "64bd40308078ce452ea3b7c7"
 },
 {
@@ -40,7 +46,9 @@
     "status": true,
     "stock": 40,
     "category": "Electricidad",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_603250-MLA49795366890_042022-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_603250-MLA49795366890_042022-O.webp"
+    ],
     "id": "64bd40368078ce452ea3b7c9"
 },
 {
@@ -51,7 +59,9 @@
     "status": true,
     "stock": 20,
     "category": "Limpieza",
-    "thumbnail": "https://store.upsangel.com/wp-content/uploads/2019/05/81JJmRj19yL._SX425_1.jpg",
+    "thumbnails": [
+        "https://store.upsangel.com/wp-content/uploads/2019/05/81JJmRj19yL._SX425_1.jpg"
+    ],
     "id": "64bd403b8078ce452ea3b7cb"
 },
 {
@@ -62,8 +72,10 @@
     "status": true,
     "stock": 14,
     "category": "Motor",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_959104-MLA52578237238_112022-O.webp",
-    "id": "64bd40428078ce452ea3b7cd"
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_959104-MLA52578237238_112022-O.webp"
+    ],
+        "id": "64bd40428078ce452ea3b7cd"
 },
 {
     "title": "Bomba de freno Aluminio Bora 2.0 Volkswagen",
@@ -73,7 +85,9 @@
     "status": true,
     "stock": 1,
     "category": "Frenos",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_940274-MLA53433663169_012023-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_940274-MLA53433663169_012023-O.webp"
+    ],
     "id": "64bd40498078ce452ea3b7cf"
 },
 {
@@ -84,8 +98,10 @@
     "status": true,
     "stock": 15,
     "category": "Motor",
-    "thumbnail": "https://shop11223.sfstatic.io/upload_dir/shop/_thumbs/Shell-Helix-Ultra-ECT-C2-C3---4-Liter.w610.h610.fill.jpg",
-    "id": "64bd40528078ce452ea3b7d1"
+    "thumbnails": [
+        "https://shop11223.sfstatic.io/upload_dir/shop/_thumbs/Shell-Helix-Ultra-ECT-C2-C3---4-Liter.w610.h610.fill.jpg"
+    ],
+        "id": "64bd40528078ce452ea3b7d1"
 },
 {
     "title": "Pomo palanca + suplemento Peugeot",
@@ -95,8 +111,10 @@
     "status": true,
     "stock": 5,
     "category": "Carroceria",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_990057-MLA52167677426_102022-O.webp",
-    "id": "64bd40578078ce452ea3b7d3"
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_990057-MLA52167677426_102022-O.webp"
+    ],
+        "id": "64bd40578078ce452ea3b7d3"
 },
 {
     "title": "Antena 40cm Generica",
@@ -106,7 +124,9 @@
     "status": true,
     "stock": 10,
     "category": "Electricidad",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_883881-MLA48317442661_112021-O.webp"
+    ],
     "id": "64bd405c8078ce452ea3b7d5"
 },
 {
@@ -117,7 +137,9 @@
     "status": true,
     "stock": 6,
     "category": "Motor",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_853384-MLA43425425843_092020-O.webp",
+    "thumbnail": [
+        "https://http2.mlstatic.com/D_NQ_NP_853384-MLA43425425843_092020-O.webp"
+    ],
     "id":"64bd40618078ce452ea3b7d7"
 },
 {
@@ -128,7 +150,9 @@
     "status": true,
     "stock": 2,
     "category": "Motor",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_926690-MLA44483887878_012021-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_926690-MLA44483887878_012021-O.webp"
+    ],
     "id":"64bd40668078ce452ea3b7d9"
 },
 {
@@ -139,7 +163,9 @@
     "status": true,
     "stock": 4,
     "category": "Suspension",
-    "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_848159-MLA27168657769_042018-O.webp",
+    "thumbnails": [
+        "https://http2.mlstatic.com/D_NQ_NP_848159-MLA27168657769_042018-O.webp"
+    ],
     "id":"64bd406b8078ce452ea3b7db"
 },
 {
@@ -150,7 +176,9 @@
     "status": true,
     "stock": 2,
     "category": "Carroceria",
-    "thumbnail": "https://nhorizontesa.vtexassets.com/arquivos/ids/547669-800-800?v=637304347182030000&width=800&height=800&aspect=true",
+    "thumbnails": [
+        "https://nhorizontesa.vtexassets.com/arquivos/ids/547669-800-800?v=637304347182030000&width=800&height=800&aspect=true"
+    ],
     "id":"64bd40718078ce452ea3b7dd"
 },
 {
@@ -161,7 +189,9 @@
     "status": true,
     "stock": 99,
     "category": "Repuestos",
-    "thumbnail": "https://www.uba.ar/internacionales/archivos/TEST.jpg",
+    "thumbnails": [
+        "https://www.uba.ar/internacionales/archivos/TEST.jpg"
+    ],
     "id":"64bd40758078ce452ea3b7df"
 }
 ]

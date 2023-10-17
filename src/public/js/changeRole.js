@@ -1,14 +1,3 @@
-const carga = document.getElementById("VistaDeCarga");
-const vista = document.getElementById("contenedorVista");
-
-function pantallaCarga() {
-    setTimeout(() => {
-        carga.style = "display: none";
-        vista.style = "display: block";
-    }, 1500);
-};
-pantallaCarga();
-
 const form = document.getElementById('uploadDocuments');
 
 async function cargaChageRole() {
