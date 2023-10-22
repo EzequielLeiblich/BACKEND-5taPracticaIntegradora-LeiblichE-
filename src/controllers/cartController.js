@@ -132,37 +132,58 @@ export default class CartController {
         return response;
     };
 
-    async purchaseProductsInCartController(req, res, next) {
+    async purchaseOrderController(req, res, next) {
         const cid = req.params.cid;
-        const purchaseInfo = req.body;
-        const products = purchaseInfo.products;
-        const userEmail = purchaseInfo.userEmailAddress;
+        let response = {};
         try {
-            if (!purchaseInfo || !Array.isArray(products) || products.length === 0) {
-                let purchase = JSON.stringify(purchaseInfo, null, 2)
-                CustomError.createError({
-                    name: "Error al Procesar la Compra de Productos en el Carrito.",
-                    cause: ErrorGenerator.generatePurchaseErrorInfo(purchase),
-                    message: "Información de productos inválida o faltante.",
-                    code: ErrorEnums.PRODUCTS_MISSING_OR_INVALID,
-                });
+            const resultService = await this.cartService.purchaseOrderService(req, res, cid);
+            response.statusCode = resultService.statusCode;
+            response.message = resultService.message;
+            if (resultService.statusCode === 500) {
+                req.logger.error(response.message);
+            } else if (resultService.statusCode === 404) {
+                req.logger.warn(response.message);
+            } else if (resultService.statusCode === 200) {
+                response.result = resultService.result;
+                req.logger.debug(response.message);
             };
-            for (const productInfo of products) {
-                if (!productInfo.databaseProductID || !mongoose.Types.ObjectId.isValid(productInfo.databaseProductID) || !productInfo.cartProductID || !mongoose.Types.ObjectId.isValid(productInfo.cartProductID)) {
-                    const error = CustomError.createError({
-                        name: "Error al Procesar la Compra de Productos en el Carrito.",
-                        cause: ErrorGenerator.generateProductsPurchaseErrorInfo(productInfo.databaseProductID, productInfo.cartProductID),
-                        message: "Uno o más productos tienen un formato inválido.",
-                        code: ErrorEnums.INVALID_PRODUCT,
-                    });
-                    return next(error);
-                };
-            };
+        } catch (error) {
+            response.statusCode = 500;
+            response.message = "Error al generar orden de compra - Controller: " + error.message;
+            req.logger.error(response.message);
+        };
+        return response;
+    }
+    
+    async purchaseSuccessController(req, res, next) {
+        const cid = req.params.cid;
+        const email = req.user.email;
+        const order = req.signedCookies[envPurchaseOrder];
+        try {
+            if (order.successfulProducts.length > 0) {
+                for (const product of order.successfulProducts) {
+                    if (!product.product ||
+                        !product.product._id || !mongoose.Types.ObjectId.isValid(product.product._id) ||
+                        !product.product.title ||
+                        !product.product.code ||
+                        !product.product.price ||
+                        !product.quantity ||
+                        !product._id || !mongoose.Types.ObjectId.isValid(product._id)
+                    ) {
+                        CustomError.createError({
+                            name: "El pago ya se ha recibido, pero ha ocurrito un error en al procesar la compra en la plataforma.",
+                            cause: ErrorGenerator.generateProductOrderEInfo(product.product),
+                            message: "Los datos del producto estan incompletos o no son validos.",
+                            code: ErrorEnums.INVALID_PRODUCT_ORDER_DATA
+                        });
+                    }
+                }
+            }
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!userEmail || !emailRegex.test(userEmail)) {
+            if (!email || !emailRegex.test(email)) {
                 CustomError.createError({
                     name: "Error al Procesar la Compra de Productos en el Carrito.",
-                    cause: ErrorGenerator.generateEmailUserErrorInfo(userEmail),
+                    cause: ErrorGenerator.generateEmailUserErrorInfo(email),
                     message: "Correo electrónico inválido.",
                     code: ErrorEnums.INVALID_EMAIL,
                 })
@@ -172,7 +193,7 @@ export default class CartController {
         };
         let response = {};
         try {
-            const resultService = await this.cartService.purchaseProductsInCartService(cid, purchaseInfo, userEmail);
+            const resultService = await this.cartService.purchaseSuccessService(cid, order, email);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
             if (resultService.statusCode === 500) {
@@ -180,7 +201,11 @@ export default class CartController {
             } else if (resultService.statusCode === 404) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
-                response.result = resultService.result;
+                res.cookie(envPurchaseOrder, "", {
+                    httpOnly: true,
+                    signed: true,
+                    maxAge: 1 * 60 * 1000
+                });
                 req.logger.debug(response.message);
             };
         } catch (error) {

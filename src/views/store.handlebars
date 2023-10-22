@@ -1,4 +1,60 @@
-<button id="pagar">Pagar</button>
-
+<div id="VistaDeCarga" style="display: block" ;>
+</div>
+<div id="contenedorVista" style=" display: none">
+    <div class="container">
+        <div class="divLogo">
+                <h1>MECATRON REPUESTOS</h1>        
+                <div style="display: flex;">
+                    <a href="/perfil"><img src="https://i.ibb.co/Kxb8GDb/login.png" alt="login" border="0" class="logoS"></a>
+                    <a href="/chat"><img src="https://i.ibb.co/ftwkrSb/png-transparent-email-computer-icons-message-icon-design-bass-miscellaneous-angle-black-1-1.png"  alt="login" border="0" class="logoS"></a>
+                    <a href="/changeRole"><img src="https://i.ibb.co/f8TCwG1/VIP-modified.png" alt="VIP-modified" border="0"class="logoS"></a>
+                    <a href="/cart"><img src="https://i.ibb.co/8DFrsw8/cart1.png" alt="cart" border="0" class="logoS"></a>
+                </div>    
+            </div>
+        <!-- ... Tu código HTML anterior ... -->
+        <h1>Publicar productos:</h1>
+        <table id="newProductTable" class="table">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Descripción</th>
+                    <th>Img 1</th>
+                    <th>Img 2</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Publicar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="model" placeholder="Modelo"></td>
+                    <td><input type="text" name="description" placeholder="Descripción"></td>
+                    <td><input type="file" name="img1"></td>
+                    <td><input type="file" name="img2"></td>
+                    <td><input type="number" name="stock" placeholder="Stock"></td>
+                    <td><input type="number" name="price" placeholder="Precio"></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- ... Tu código HTML posterior ... -->
+        <h1 style="margin-top: 1em;">Tus productos publicados:</h1>
+        <table id="yourProductsTable" class="table">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Descripción</th>
+                    <th>Img 1</th>
+                    <th>Img 2</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/store.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/store.js" type="module"></script>

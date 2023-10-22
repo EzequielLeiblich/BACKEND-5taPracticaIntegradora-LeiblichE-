@@ -67,7 +67,7 @@ export default class SessionService {
                         resultRolPremium = { status: "incomplete documents" };
                     }
                 } else if (newRole === "user") {
-                    deleteProdPremRes = await this.productService.deleteAllPremiumProductService(uid, uid, userRole);
+                    deleteProdPremRes = await this.productsService.deleteAllPremiumProductService(uid, uid, userRole);
                     if (deleteProdPremRes.statusCode === 200 || deleteProdPremRes.statusCode === 404) {
                         resultRolPremium = await this.userDAO.updateUser(uid, updateUser);
                     };

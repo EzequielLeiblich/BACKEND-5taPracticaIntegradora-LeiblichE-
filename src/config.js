@@ -44,5 +44,7 @@ export default {
   RESET_PASSWORD_COOKIE: process.env.RESET_PASSWORD_COOKIE,
   // Keys Stripe:
   STRIPE_KEY_PUBLIC: process.env.STRIPE_KEY_PUBLIC,
-  STRIPE_KEY_SECRET: process.env.STRIPE_KEY_SECRET
+  STRIPE_KEY_SECRET: process.env.STRIPE_KEY_SECRET,
+  // Purchase Order
+  PURCHASE_ORDER: process.env.PURCHASE_ORDER
 }

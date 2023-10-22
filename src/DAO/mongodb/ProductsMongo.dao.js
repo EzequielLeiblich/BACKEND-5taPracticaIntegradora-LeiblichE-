@@ -61,14 +61,12 @@ export default class ProductDAO {
                     page: page,
                 });
             }
-            const hasNextPage = result.page < result.totalPages;
             if (result.docs.length === 0) {
                 response.status = "not found products";
             } else {
                 response.status = "success";
                 response.result = {
-                    products: result,
-                    hasNextPage: hasNextPage
+                    products: result
                 };
             };
         } catch (error) {

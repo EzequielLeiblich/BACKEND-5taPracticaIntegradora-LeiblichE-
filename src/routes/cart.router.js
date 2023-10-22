@@ -19,7 +19,7 @@ cartRouter.get("/:cid", passport.authenticate('jwt', { session: false, failureRe
   if(result !== undefined) {
     res.status(result.statusCode).send(result);
   };
-})
+});
 
 cartRouter.get('/', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'
 }), rolesRMiddlewareAdmin, async (req, res) => {
@@ -35,13 +35,20 @@ cartRouter.post('/:cid/products/:pid/quantity/:quantity', passport.authenticate(
   };
 });
 
-cartRouter.post('/:cid/purchase', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'
-}), rolesRMiddlewareUsers, verificarPertenenciaCarrito, async (req, res, next) => {
-  const result = await cartController.purchaseProductsInCartController(req, res, next);
+cartRouter.post('/:cid/orderGeneration', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken' }), rolesRMiddlewareUsers, verificarPertenenciaCarrito, async (req, res, next) => {
+  const result = await cartController.purchaseOrderController(req, res, next);
   if(result !== undefined) {
     res.status(result.statusCode).send(result);
   };
-})
+});
+
+cartRouter.post('/:cid/purchaseSuccess', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'
+}), rolesRMiddlewareUsers, verificarPertenenciaCarrito, async (req, res, next) => {
+  const result = await cartController.purchaseSuccessController(req, res, next);
+  if(result !== undefined) {
+    res.status(result.statusCode).send(result);
+  };
+});
 
 cartRouter.delete('/:cid/products/:pid', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'
 }), rolesRMiddlewareUsers, verificarPertenenciaCarrito, async (req, res, next) => {
@@ -49,7 +56,7 @@ cartRouter.delete('/:cid/products/:pid', passport.authenticate('jwt', { session:
   if(result !== undefined) {
     res.status(result.statusCode).send(result);
   };
-})
+});
 
 cartRouter.delete('/:cid', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'
 }), rolesRMiddlewareUsers, verificarPertenenciaCarrito, async (req, res, next) => {

@@ -40,6 +40,15 @@ const ErrorEnums = {
     // User:
 
     INVALID_FORM_FILES_ERROR: 30,
+
+    // Stripe:
+
+    INVALID_AMOUNT_ORDER: 31,
+    INVALID_PRODUCT_ORDER_DATA: 32,
+
+    // Filter products:
+
+    INVALID_FILTER_PRODUCT_ERROR: 33,
 }
 
 export default ErrorEnums;

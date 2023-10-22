@@ -1,6 +1,7 @@
 const tableCarts = document.getElementById('tableCarts');
 const cierreCompra = document.getElementById('cierreCompra');
 let cid;
+let email;
 async function loadCart() {
   const sessionResponse = await fetch('/api/sessions/current', {
     method: 'GET',
@@ -22,13 +23,14 @@ async function loadCart() {
   } else {
     try {
       cid = sessionRes.cart;
+      email = sessionRes.email;
       const cartResponse = await fetch(`/api/carts/${cid}`, {
         method: 'GET',
-      })
+      });
       if (cartResponse.redirected) {
         const invalidTokenURL = cartResponse.url;
         window.location.replace(invalidTokenURL);
-      }
+      };
       const cartRes = await cartResponse.json();
       if (sessionRes.status === 401) {
         Swal.fire({
@@ -38,7 +40,7 @@ async function loadCart() {
           imageWidth: 70,
           imageHeight: 70,
           imageAlt: cartRes.h1,
-        })
+        });
       } else {
         const statusCodeRes = cartRes.statusCode;
         const messageRes = cartRes.message;
@@ -53,16 +55,18 @@ async function loadCart() {
                 text: messageRes
               });
             }, 1000);
-          }
+          };
           if (resultCart.products.length === 0) {
             tableCarts.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; margin-top: 0em; flex-direction: column;">
-            <img style="width: 11vw; margin-top:2em; margin-bottom: 4em;" src="https://i.ibb.co/GTbyDDP/CARTVACIO-removebg-preview.png">
-            <h2>Tu carrito de compras está vacío. ¡Agrega productos para comenzar a comprar!</h2>
+            <img style="width: 11vw; margin-top:1.5em; margin-bottom: 3em;" src="https://i.ibb.co/GTbyDDP/CARTVACIO-removebg-preview.png">
+            <h2>Tu carrito de compras está vacío.</h2> 
+            <br> 
+            <h2>¡Agrega productos para comenzar a comprar!</h2>
             </div>`
             cierreCompra.innerHTML = ""
           } else if (resultCart.products.length > 0) {
             loadProducts(resultCart);
-          }
+          };
         } else if (customError || statusCodeRes === 404) {
           Swal.fire({
             icon: 'warning',
@@ -76,20 +80,20 @@ async function loadCart() {
             text: messageRes
           });
         }
-      }
+      };
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error en la solicitud de obtener carrito',
         text: 'Error: ' + error.message
       });
-    }
-  }
-}
-loadCart()
+    };
+  };
+};
+loadCart();
 
 async function loadProducts(resultCart) {
-  const tableProdCartID = document.getElementById('tableProdCartID')
+  const tableProdCartID = document.getElementById('tableProdCartID');
   let total = 0;
   tableProdCartID.innerHTML = ""
   resultCart.products.forEach((product) => {
@@ -132,8 +136,12 @@ async function loadProducts(resultCart) {
     deleteAllProds();
   })
   cierreCompra.innerHTML = `<h2>Total a pagar $ <span id="totalPrice">${total}</span></h2> <br />
-  <h2 id="finalizarCompraBtn" style="width: 60%; margin-left: 20%; margin-right: 20%;" class="boton" id="finalizarCompra">Finalizar Compra</h2> <br />`;
-}
+  <h2 id="generarOrden" style="width: 60%; margin-left: 20%; margin-right: 20%;" class="boton" id="finalizarCompra">Generar orden de compra</h2> <br />`;
+  const generarOrden = document.getElementById('generarOrden');
+  generarOrden.addEventListener("click", async () => {
+    orderGeneration();
+  });
+};
 
 document.addEventListener('input', async (event) => {
   if (event.target.classList.contains('input-quantity')) {
@@ -185,12 +193,7 @@ document.addEventListener('input', async (event) => {
               title: `Has actualizado ${title} a ${newQuantity} Unds. exitosamente.`,
               icon: 'success'
             });
-            const cartResponse = await fetch(`/api/carts/${cid}`, {
-              method: 'GET',
-            })
-            const cartRes = await cartResponse.json();
-            const resultCart = cartRes.result;
-            loadProducts(resultCart);
+            loadCart();
           } else if (customError || statusCodeRes === 404) {
             Swal.fire({
               icon: 'warning',
@@ -340,3 +343,124 @@ async function deleteAllProds() {
     });
   }
 }
+
+async function orderGeneration() {
+  try {
+    const orderResponse = await fetch(`/api/carts/${cid}/orderGeneration`, {
+      method: 'POST',
+    })
+    if (orderResponse.redirected) {
+      const invalidTokenURL = orderResponse.url;
+      window.location.replace(invalidTokenURL);
+    }
+    const orderRes = await orderResponse.json();
+    if (orderRes.status === 401) {
+      Swal.fire({
+        title: orderRes.h1,
+        text: orderRes.message,
+        imageUrl: orderRes.img,
+        imageWidth: 70,
+        imageHeight: 70,
+        imageAlt: orderRes.h1,
+      })
+    } else {
+      const statusCodeRes = orderRes.statusCode;
+      const messageRes = orderRes.message;
+      const customError = orderRes.cause;
+      const order = orderRes.result;
+      if (statusCodeRes === 200) {
+        if (order.failedProducts.length > 0) {
+          const confirmationResult = await Swal.fire({
+            title: 'Confirmar compra',
+            text: 'El carrito contiene productos con una cantidad superior al stock disponible. Puedes eliminarlos de tu carrito antes de realizar la compra o simplemente continuar sin que se incluyan en el procesamiento de la misma. ¿Deseas continuar con la compra?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar',
+          });
+          if (confirmationResult.isConfirmed) {
+            stripe(order);
+          };
+        } else {
+          stripe(order);
+        }
+      } else if (customError || statusCodeRes === 404) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Error al generar orden de compra',
+          text: customError || messageRes
+        });
+      } else if (statusCodeRes === 500) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al generar orden de compra',
+          text: messageRes
+        });
+      }
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error en la solicitud de generar orden de compra',
+      text: 'Error: ' + error.message
+    });
+  }
+}
+
+// Stripe: 
+async function stripe(order) {
+  if (order.successfulProducts.length > 0) {
+    try {
+      const paymentsIntentsResponse = await fetch('/api/payments/paymentsIntents', {
+        method: 'GET',
+      })
+      if (paymentsIntentsResponse.redirected) {
+        const invalidTokenURL = paymentsIntentsResponse.url;
+        window.location.replace(invalidTokenURL);
+      }
+      const paymentIntRes = await paymentsIntentsResponse.json();
+      if (paymentIntRes.status === 401) {
+        Swal.fire({
+          title: paymentIntRes.h1,
+          text: paymentIntRes.message,
+          imageUrl: paymentIntRes.img,
+          imageWidth: 70,
+          imageHeight: 70,
+          imageAlt: paymentIntRes.h1,
+        })
+      } else {
+        const statusCodeRes = paymentIntRes.statusCode;
+        const messageRes = paymentIntRes.message;
+        const customError = paymentIntRes.cause;
+        const url = paymentIntRes.result;
+        if (statusCodeRes === 200) {
+          window.location.href = url;
+        } else if (customError) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Error al generar intento de pago',
+            text: customError
+          });
+        } else if (statusCodeRes === 500) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al generar intento de pago',
+            text: messageRes
+          });
+        }
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en la solicitud de generar intento de pago',
+        text: 'Error: ' + error.message
+      });
+    }
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al generar orden de compra',
+      text: 'Debe tener al menos un producto válido en su carrito para generar la orden.'
+    });
+  };
+};

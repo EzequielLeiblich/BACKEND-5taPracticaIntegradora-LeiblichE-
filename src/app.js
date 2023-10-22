@@ -23,7 +23,7 @@ import msmRouter from "./routes/message.router.js";
 import ticketRouter from "./routes/ticket.router.js";
 import mockRouter from "./routes/mock.router.js";
 import loggerRouter from './routes/loggerTest.router.js';
-import stripeRouter from './routes/stripe.router.js'
+import paymentsRouter from './routes/payments.router.js'
 
 // IMPORTS CONTROLLERS
 
@@ -120,18 +120,18 @@ socketServer.on("connection", async (socket) => {
   // PRODUCTS
 
   const productsResponse = await viewsController.getAllProductsControllerV();
-  socket.emit("products", productsResponse.result);
+  socket.emit('products', productsResponse);
 
   socket.on("busquedaFiltrada", async (busquedaProducts) => {
     const { limit, page, sort, filtro, filtroVal } = busquedaProducts;
     const productsResponse = await viewsController.getAllProductsControllerV(limit, page, sort, filtro, filtroVal);
-    socket.emit('products', productsResponse.result);
+    socket.emit('products', productsResponse);
   });
 
   // MESSAGES:
 
-  const messages = await viewsController.getAllMessageControllerV();
-  socket.emit("messages", messages.result);
+  const messagesResponse = await viewsController.getAllMessageControllerV();
+  socket.emit("messages", messagesResponse);
 });
 
 // MIDDLEWARE
@@ -152,4 +152,5 @@ app.use("/api/products", productsRouter);
 app.use("/api/tickets", ticketRouter);
 app.use("/mockProducts", mockRouter);
 app.use('/loggerTest', loggerRouter);
-app.use('/api/payments', stripeRouter);
+app.use('/api/payments', paymentsRouter);
+

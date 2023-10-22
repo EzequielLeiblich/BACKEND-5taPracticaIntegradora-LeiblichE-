@@ -57,12 +57,11 @@ export default class ProductService {
                 response.message = resultDAO.message;
             } else if (resultDAO.status === "not found products") {
                 response.statusCode = 404;
-                response.message = `No se encontraron productos. El resultado fue de ${resultDAO.result.products.docs.length} productos.`;
+                response.message = `No se encontraron productos.`
             } else if (resultDAO.status === "success") {
                 response.statusCode = 200;
                 response.message = "Productos obtenidos exitosamente.";
                 response.result = resultDAO.result.products;
-                response.hasNextPage = resultDAO.result.hasNextPage;
             };
         } catch (error) {
             response.statusCode = 500;
@@ -197,7 +196,7 @@ export default class ProductService {
                             response.statusCode = 200;
                             response.message = "Productos eliminados y correo de notificación enviado al usuario premium exitosamente.";
                             response.result = resultDAO.result;
-                        } else if (resultSendMail.rejected && resultSendMail.rejected.length > 0){
+                        } else if (resultSendMail.rejected && resultSendMail.rejected.length > 0) {
                             response.statusCode = 500;
                             response.message = "Error al enviar el correo electrónico. Por favor, inténtelo de nuevo más tarde.";
                         };
@@ -225,7 +224,21 @@ export default class ProductService {
                 response.statusCode = 404;
                 response.message = `No se encontró ningún producto con el ID ${pid}.`;
             } else if (productInfo.status === "success") {
-                if (owner === "admin" || productInfo.result.owner === owner) {
+                if (owner === "stock"){
+                    const resultDAO = await this.productDao.updateProduct(pid, updateProduct);
+                    if (resultDAO.status === "error") {
+                        response.statusCode = 500;
+                        response.message = resultDAO.message;
+                    } else if (resultDAO.status === "not found product") {
+                        response.statusCode = 404;
+                        response.message = `No se encontró ningún producto con el ID ${pid}.`;
+                    } else if (resultDAO.status === "success") {
+                        response.statusCode = 200;
+                        response.message = "Producto actualizado exitosamente.";
+                        response.result = "Stock actualizado."
+                    };
+                }
+                if (owner === "admin" && productInfo.result.owner === "admin" || productInfo.result.owner === owner) {
                     const resultDAO = await this.productDao.updateProduct(pid, updateProduct);
                     if (resultDAO.status === "error") {
                         response.statusCode = 500;
