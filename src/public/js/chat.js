@@ -63,7 +63,7 @@ async function deleteMessage(messageId) {
         window.location.replace(invalidTokenURL);
     }
     const res = await response.json();
-    if (res.status === 401) {
+    if (res.statusCode === 401) {
         Swal.fire({
             title: res.h1,
             text: res.message,
@@ -129,7 +129,7 @@ async function enviarMensaje() {
             window.location.replace(invalidTokenURL);
         };
         const res = await response.json();
-        if (res.status === 401) {
+        if (res.statusCode === 401) {
             Swal.fire({
             title: res.h1,
             text: res.message,
@@ -161,7 +161,7 @@ async function enviarMensaje() {
                     window.location.replace(invalidTokenURL);
                 };
                 const resEnv = await responseEnv.json();
-                if (resEnv.status === 401) {
+                if (resEnv.statusCode === 401) {
                     Swal.fire({
                     title: resEnv.h1,
                     text: resEnv.message,

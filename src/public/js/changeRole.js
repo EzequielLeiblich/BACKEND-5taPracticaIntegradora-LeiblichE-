@@ -10,7 +10,7 @@ async function cargaChageRole() {
             window.location.replace(invalidTokenURL);
         }
         const res = await response.json();
-        if (res.status === 401) {
+        if (res.statusCode === 401) {
             Swal.fire({
                 title: res.h1,
                 text: res.message,
@@ -86,7 +86,7 @@ async function cargarDocuments() {
             window.location.replace(invalidTokenURL);
         }
         const sessionRes = await sessionResponse.json();
-        if (sessionRes.status === 401) {
+        if (sessionRes.statusCode === 401) {
             Swal.fire({
                 title: sessionRes.h1,
                 text: sessionRes.message,
@@ -108,7 +108,7 @@ async function cargarDocuments() {
                     window.location.replace(invalidTokenURL);
                 };
                 const docsRes = await uploadDocsRes.json();
-                if (docsRes.status === 401) {
+                if (docsRes.statusCode === 401) {
                     Swal.fire({
                         title: docsRes.h1,
                         text: docsRes.message,
@@ -182,7 +182,7 @@ ChangeROLE.addEventListener("click", async (event) => {
             window.location.replace(invalidTokenURL);
         }
         const sessionRes = await sessionResponse.json();
-        if (sessionRes.status === 401) {
+        if (sessionRes.statusCode === 401) {
             Swal.fire({
                 title: sessionRes.h1,
                 text: sessionRes.message,
@@ -239,7 +239,7 @@ async function cambiarRole(uid) {
             window.location.replace(invalidTokenURL);
         };
         const res = await response.json();
-        if (res.status === 401) {
+        if (res.statusCode === 401) {
             Swal.fire({
                 title: res.h1,
                 text: res.message,

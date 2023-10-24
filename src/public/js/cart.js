@@ -11,7 +11,7 @@ async function loadCart() {
     window.location.replace(invalidTokenURL);
   }
   const sessionRes = await sessionResponse.json();
-  if (sessionRes.status === 401) {
+  if (sessionRes.statusCode === 401) {
     Swal.fire({
       title: sessionRes.h1,
       text: sessionRes.message,
@@ -32,7 +32,7 @@ async function loadCart() {
         window.location.replace(invalidTokenURL);
       };
       const cartRes = await cartResponse.json();
-      if (sessionRes.status === 401) {
+      if (cartRes.statusCode === 401) {
         Swal.fire({
           title: cartRes.h1,
           text: cartRes.message,
@@ -99,7 +99,7 @@ async function loadProducts(resultCart) {
   resultCart.products.forEach((product) => {
     let title = product.product.title;
     let stock = product.product.stock
-    let img = product.product.thumbnails[0].reference
+    let img = product.product.img1.reference
     let price = product.product.price;
     let quantityInCart = product.quantity;
     let pidInCart = product._id;
@@ -171,7 +171,7 @@ document.addEventListener('input', async (event) => {
           window.location.replace(invalidTokenURL);
         }
         const quantityRes = await quantityResponse.json();
-        if (quantityRes.status === 401) {
+        if (quantityRes.statusCode === 401) {
           Swal.fire({
             title: quantityRes.h1,
             text: quantityRes.message,
@@ -237,7 +237,7 @@ async function deleteToCart(pid, title) {
       window.location.replace(invalidTokenURL);
     }
     const deleteRes = await deleteResponse.json();
-    if (deleteRes.status === 401) {
+    if (deleteRes.statusCode === 401) {
       Swal.fire({
         title: deleteRes.h1,
         text: deleteRes.message,
@@ -298,7 +298,7 @@ async function deleteAllProds() {
       window.location.replace(invalidTokenURL);
     }
     const deleteRes = await deleteAllResponse.json();
-    if (deleteRes.status === 401) {
+    if (deleteRes.statusCode === 401) {
       Swal.fire({
         title: deleteRes.h1,
         text: deleteRes.message,
@@ -354,7 +354,7 @@ async function orderGeneration() {
       window.location.replace(invalidTokenURL);
     }
     const orderRes = await orderResponse.json();
-    if (orderRes.status === 401) {
+    if (orderRes.statusCode === 401) {
       Swal.fire({
         title: orderRes.h1,
         text: orderRes.message,
@@ -407,7 +407,7 @@ async function orderGeneration() {
   }
 }
 
-// Stripe: 
+
 async function stripe(order) {
   if (order.successfulProducts.length > 0) {
     try {
@@ -419,7 +419,7 @@ async function stripe(order) {
         window.location.replace(invalidTokenURL);
       }
       const paymentIntRes = await paymentsIntentsResponse.json();
-      if (paymentIntRes.status === 401) {
+      if (paymentIntRes.statusCode === 401) {
         Swal.fire({
           title: paymentIntRes.h1,
           text: paymentIntRes.message,

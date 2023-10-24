@@ -8,7 +8,7 @@ async function paySuccess() {
         window.location.replace(invalidTokenURL);
     };
     const sessionRes = await sessionResponse.json();
-    if (sessionRes.status === 401) {
+    if (sessionRes.statusCode === 401) {
         Swal.fire({
             title: sessionRes.h1,
             text: sessionRes.message,
@@ -27,7 +27,7 @@ async function paySuccess() {
                 window.location.replace(invalidTokenURL);
             }
             const purchaseRes = await purchaseResponse.json();
-            if (purchaseRes.status === 401) {
+            if (purchaseRes.statusCode === 401) {
                 Swal.fire({
                     title: purchaseRes.h1,
                     text: purchaseRes.message,
@@ -42,8 +42,8 @@ async function paySuccess() {
                 const customError = purchaseRes.cause;
                 if (statusCodeRes === 200) {
                     parrafo.innerHTML = `
-                    <p style="margin: 0.7em">¡Estimado ${sessionRes.name}, nos complace informarte que tu pago se ha completado con éxito!</p>
-                    <p style="margin: 0.7em">En breve, encontrarás el recibo de compra en la sección de tickets de tu carrito. Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en ponerte en contacto con nuestro equipo de soporte. Estamos aquí para ayudarte en todo lo que necesites.</p>
+                    <p style="margin: 0.7em">
+                    <p style="margin: 0.7em">En breve, encontrarás el recibo de compra en la sección de tickets de tu carrito.</p>
                     <p style="margin: 0.7em">Gracias por tu compra. Atentamente, Global Technology.</p>
                     `;
                 } else if (customError || statusCodeRes === 404) {

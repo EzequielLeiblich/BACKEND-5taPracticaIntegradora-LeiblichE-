@@ -49,7 +49,16 @@ productsRouter.delete('/deleteProdPremium/:uid', passport.authenticate('jwt', { 
   };
 });
 
-productsRouter.put('/:pid', passport.authenticate('jwt', { session: false, failureRedirect: '/invalidToken'}), rolesRMiddlewareAdminAndPremium, async (req, res, next) => {
+productsRouter.put('/:pid', passport.authenticate('jwt', {
+  session: false,
+  failureRedirect: '/invalidToken'
+}), rolesRMiddlewareAdminAndPremium,  uploaderProducts.fields([{
+  name: 'Img1',
+  maxCount: 1
+}, {
+  name: 'Img2',
+  maxCount: 1
+}]), async (req, res, next) => {
   const result = await productController.updatedProductController(req, res, next);
   if (result !== undefined) {
     res.status(result.statusCode).send(result);

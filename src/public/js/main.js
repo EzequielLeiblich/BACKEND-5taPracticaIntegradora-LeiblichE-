@@ -11,7 +11,7 @@ async function saludoYAccesoPrem() {
       window.location.replace(invalidTokenURL);
     };
     const sessionRes = await sessionResponse.json();
-    if (sessionRes.status === 401) {
+    if (sessionRes.statusCode === 401) {
       Swal.fire({
         title: sessionRes.h1,
         text: sessionRes.message,
@@ -28,17 +28,13 @@ async function saludoYAccesoPrem() {
       }
       setTimeout(() => {
         const saludoYaMostrado = localStorage.getItem('saludoMostrado');
-        const duracionSaludoEnMilisegundos = 12 * 60 * 60 * 1000;
-        if (!saludoYaMostrado) {
+        if (saludoYaMostrado === 'false') {
           Swal.fire({
             icon: 'success',
             title: '¡Bienvenido!',
             text: `Hola ${sessionRes.name}, has iniciado sesión con éxito.`,
           });
-          localStorage.setItem('saludoMostrado', Date.now().toString());
-          setTimeout(() => {
-            localStorage.removeItem('saludoMostrado');
-          }, duracionSaludoEnMilisegundos);
+          localStorage.setItem('saludoMostrado', 'true');
         }
       }, 600);
     }
@@ -78,8 +74,8 @@ function allProducts() {
           <tr>
             <td id="${product.title}">${product.title}</td>
             <td class="description">${product.description}</td>
-            <td><img src="${product.thumbnails[0].reference}" alt="${product.title}" class="Imgs"></td>
-            <td><img src="${product.thumbnails[1].reference}" alt="${product.title}" class="Imgs"></td>
+            <td><img src="${product.img1.reference}" alt="${product.title}" class="Imgs"></td>
+            <td><img src="${product.img2.reference}" alt="${product.title}" class="Imgs"></td>
             <td>${product.stock} Und.</td>
             <td>$${product.price}</td>
             <td><input type="number" id="cantidadInput${product._id}" min="1" max="${product.stock}" value="1"></td>
@@ -157,7 +153,7 @@ async function addToCart(productID, title, quantity) {
     window.location.replace(invalidTokenURL);
   };
   const res = await response.json();
-  if (res.status === 401) {
+  if (res.statusCode === 401) {
     Swal.fire({
       title: res.h1,
       text: res.message,
@@ -170,54 +166,59 @@ async function addToCart(productID, title, quantity) {
     let user = res;
     const cartID = user.cart;
     const productIDValue = productID;
-    if (user && cartID && productIDValue) {
-      const responseAdd = await fetch(`/api/carts/${cartID}/products/${productIDValue}/quantity/${quantity}`, {
-        method: 'POST',
-      })
-      if (responseAdd.redirected) {
-        let invalidTokenURL = responseAdd.url;
-        window.location.replace(invalidTokenURL);
-      };
-      const resAdd = await responseAdd.json();
-      if (resAdd.status === 401) {
+    const responseAdd = await fetch(`/api/carts/${cartID}/products/${productIDValue}/quantity/${quantity}`, {
+      method: 'POST',
+    })
+    if (responseAdd.redirected) {
+      let invalidTokenURL = responseAdd.url;
+      window.location.replace(invalidTokenURL);
+    };
+    const resAdd = await responseAdd.json();
+    if (resAdd.statusCode === 401) {
+      Swal.fire({
+        title: resAdd.h1,
+        text: resAdd.message,
+        imageUrl: resAdd.img,
+        imageWidth: 70,
+        imageHeight: 70,
+        imageAlt: resAdd.h1,
+      });
+    } else {
+      const statusCodeRes = resAdd.statusCode;
+      const messageRes = resAdd.message;
+      const customError = resAdd.cause;
+      if (statusCodeRes === 200) {
+        let titleS;
+        if (quantity > 1){
+          titleS = `${quantity} Unds. de ${title} se han agregado a tu carrito`
+        } else if (quantity = 1){
+          titleS = `${quantity} Und. de ${title} se ha agregado a tu carrito`
+        }
         Swal.fire({
-          title: resAdd.h1,
-          text: resAdd.message,
-          imageUrl: resAdd.img,
-          imageWidth: 70,
-          imageHeight: 70,
-          imageAlt: resAdd.h1,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          title: titleS,
+          icon: 'success'
         });
-      } else {
-        const statusCodeRes = resAdd.statusCode;
-        const messageRes = resAdd.message;
-        const customError = resAdd.cause;
-        if (statusCodeRes === 200) {
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 5000,
-            title: `${quantity} Unds. de ${title} se ha agregado a tu carrito`,
-            icon: 'success'
-          });
-        } else if (customError || statusCodeRes === 404 || statusCodeRes === 403) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Error en el carrito',
-            text: customError || messageRes
-          });
-        } else if (statusCodeRes === 500) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error en el carrito',
-            text: messageRes
-          });
-        };
+      } else if (customError || statusCodeRes === 404 || statusCodeRes === 403) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Error en el carrito',
+          text: customError || messageRes
+        });
+      } else if (statusCodeRes === 500) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el carrito',
+          text: messageRes
+        });
       };
     };
   };
 };
+
 
 let limit;
 let page;
@@ -236,107 +237,70 @@ function filtrarProducts(limit, page, sort, filtro, filtroVal) {
   socket.emit('busquedaFiltrada', busquedaProducts);
 };
 
-const Limit = document.getElementById("limit");
-
-Limit.addEventListener('input', () => {
-  limit = Limit.value;
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
-});
-
-function otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal) {
-  limit = parseInt(Limit.value, 10);
-  if (limit === totalDocs || limit < totalDocs) {
-    filtrarProducts(limit, page, sort, filtro, filtroVal);
-    setTimeout(() => {
-      if (limit > totalDocs) {
-        swal.fire({
-          icon: 'warning',
-          title: 'Error al aplicar filtro',
-          text: 'La cantidad especificada en el filtro "Mostrar" es mayor que la cantidad de productos disponibles. El valor del filtro se ajustará automáticamente al total de resultados. Puedes configurar el filtro con cantidades menores a este total si lo deseas.'
-        });
-        limit = totalDocs;
-        filtrarProducts(limit, page, sort, filtro, filtroVal);
-        Limit.value = totalDocs;
-      }
-    }, 500);
-  } else if (limit > totalDocs) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Error al aplicar filtro',
-      text: 'La cantidad especificada en el filtro "Mostrar" es mayor que la cantidad de productos disponibles. El valor del filtro se ajustará automáticamente al total de resultados. Puedes configurar el filtro con cantidades menores a este total si lo deseas.'
-    });
-    limit = totalDocs;
-    filtrarProducts(limit, page, sort, filtro, filtroVal);
-    Limit.value = totalDocs;
-  }
-};
-
 const all = document.getElementById("All")
-
 all.addEventListener('click', () => {
   filtro = "";
   filtroVal = "";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const motor = document.getElementById("Motor")
-
 motor.addEventListener('click', () => {
   filtro = "category";
   filtroVal = "Motor";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const electricidad = document.getElementById("Electricidad")
-
 electricidad.addEventListener('click', () => {
   filtro = "category";
   filtroVal = "Electricidad";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const frenos = document.getElementById("Frenos")
-
 frenos.addEventListener('click', () => {
   filtro = "category";
   filtroVal = "Frenos";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const carroceria = document.getElementById("Carroceria")
-
 carroceria.addEventListener('click', () => {
   filtro = "category";
   filtroVal = "Carroceria";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const suspension = document.getElementById("Suspension")
-
 suspension.addEventListener('click', () => {
   filtro = "category";
   filtroVal = "Suspension";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const menorPrice = document.getElementById("MenorPre")
-
 menorPrice.addEventListener('click', () => {
   sort = "1";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
 const mayorPrice = document.getElementById("MayorPre")
-
 mayorPrice.addEventListener('click', () => {
   sort = "-1";
-  otrosFiltrosYLimit(limit, page, sort, filtro, filtroVal);
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 });
 
-const limpiarFiltros = document.getElementById("Limpiar");
+const limitInput = document.getElementById("limit");
+limitInput.addEventListener('input', () =>{
+  limit = limitInput.value
+  filtrarProducts(limit, page, sort, filtro, filtroVal);
 
+})
+
+const limpiarFiltros = document.getElementById("Limpiar");
 limpiarFiltros.addEventListener('click', () => {
-  Limit.value = "";
+  limitInput.value = "";
   limit = 10;
   page = 1;
   sort = 1;

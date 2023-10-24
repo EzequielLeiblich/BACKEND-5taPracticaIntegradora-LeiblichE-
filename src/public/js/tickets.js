@@ -9,7 +9,7 @@ async function loadTickets() {
         window.location.replace(invalidTokenURL);
     }
     const sessionRes = await sessionResponse.json();
-    if (sessionRes.status === 401) {
+    if (sessionRes.statusCode === 401) {
         Swal.fire({
             title: sessionRes.h1,
             text: sessionRes.message,
@@ -29,7 +29,7 @@ async function loadTickets() {
                 window.location.replace(invalidTokenURL);
             }
             const cartRes = await cartResponse.json();
-            if (sessionRes.status === 401) {
+            if (sessionRes.statusCode === 401) {
                 Swal.fire({
                     title: cartRes.h1,
                     text: cartRes.message,
