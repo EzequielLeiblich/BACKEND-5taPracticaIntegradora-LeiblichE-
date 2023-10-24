@@ -21,7 +21,7 @@ export default class ProductController {
             const ruta = Img1.substring(indice + parteComun.length);
             rutaImg1 = ruta
         };
-        if (req.files && req.files.Img2[0].path) {
+        if (req.files && req.files.Img2) {
             const Img2 = req.files.Img2[0].path;
             const indice = Img2.indexOf(parteComun);
             const ruta = Img2.substring(indice + parteComun.length);
@@ -46,28 +46,31 @@ export default class ProductController {
         };
         let response = {};
         try {
-            let thumbnails = [];
-            thumbnails.push({
+            productData.img1 = {
                 name: "Img 1",
                 reference: `${rutaImg1}`
-            });
-            thumbnails.push({
+            };
+
+            productData.img2 = {
                 name: "Img 2",
-                reference: `${rutaImg2}`
-            });
-            productData.thumbnail = thumbnail;
+                reference: `${rutaImg2}`,
+            };
             const ownerRole = req.user.role;
             let owner = "";
             let email = "";
+            let role = ""
             if (ownerRole === "premium") {
                 owner = req.user.userID;
+                role = req.user.role;
                 email = req.user.email;
             } else if (ownerRole === "admin") {
                 owner = req.user.role;
+                role = req.user.role;
                 email = null;
-            }
-            productData.owner = owner
+            };
+            productData.owner = owner;
             productData.email = email;
+            productData.role = role;
             const resultService = await this.productService.createProductService(productData);
             response.statusCode = resultService.statusCode;
             response.message = resultService.message;
@@ -76,7 +79,7 @@ export default class ProductController {
             } else if (resultService.statusCode === 200) {
                 response.result = resultService.result;
                 const products = await this.productService.getAllProductsService();
-                req.socketServer.sockets.emit('products', products.result);
+                req.socketServer.sockets.emit('products', products);
                 req.logger.debug(response.message);
             };
         } catch (error) {
@@ -112,6 +115,8 @@ export default class ProductController {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 response.result = resultService.result;
+                const products = await this.productService.getAllProductsService();
+                req.socketServer.sockets.emit('products', products);
                 req.logger.debug(response.message);
             };
         } catch (error) {
@@ -190,7 +195,7 @@ export default class ProductController {
                 } else if (resultService.statusCode === 200) {
                     response.result = resultService.result;
                     const products = await this.productService.getAllProductsService();
-                    req.socketServer.sockets.emit('products', products.result);
+                    req.socketServer.sockets.emit('products', products);
                     req.logger.debug(response.message);
                 };
             }
@@ -231,6 +236,8 @@ export default class ProductController {
             } else if (resultService.statusCode === 404 || resultService.statusCode === 403) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
+                const products = await this.productService.getAllProductsService();
+                req.socketServer.sockets.emit('products', products);
                 req.logger.debug(response.message);
             };
         } catch (error) {
@@ -244,6 +251,23 @@ export default class ProductController {
     async updatedProductController(req, res, next) {
         const pid = req.params.pid;
         const updatedFields = req.body;
+        let rutaImg1;
+        let rutaImg2;
+        const parteComun = 'public\\';
+        if (req.files && req.files.frontImg) {
+            const Img1 = req.files.Img1[0].path;
+            const indice = Img1.indexOf(parteComun);
+            const ruta = Img1.substring(indice + parteComun.length);
+            rutaImg1 = ruta
+        };
+        if (req.files && req.files.Img2) {
+            const Img2 = req.files.Img2[0].path;
+            const indice = Img2.indexOf(parteComun);
+            const ruta = Img2.substring(indice + parteComun.length);
+            rutaImg2 = ruta
+        };
+        parseFloat(updatedFields.price);
+        parseFloat(updatedFields.stock);
         try {
             if (!pid || !mongoose.Types.ObjectId.isValid(pid)) {
                 CustomError.createError({
@@ -266,6 +290,18 @@ export default class ProductController {
         };
         let response = {};
         try {
+            if (rutaImg1) {
+                updatedFields.img1 = {
+                    name: "Img 1",
+                    reference: `${rutaImg1}`
+                };
+            };
+            if (rutaImg2) {
+                updatedFields.img2 = {
+                    name: "Img 2",
+                    reference: `${rutaImg2}`,
+                };
+            };
             const ownerRole = req.user.role;
             const owner = ownerRole === "premium" ? req.user.userID : ownerRole === "admin" ? req.user.role : undefined;
             const resultService = await this.productService.updateProductService(pid, updatedFields, owner);
@@ -277,7 +313,7 @@ export default class ProductController {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 const products = await this.productService.getAllProductsService();
-                req.socketServer.sockets.emit('products', products.result);
+                req.socketServer.sockets.emit('products', products);
                 req.logger.debug(response.message);
             };
         } catch (error) {

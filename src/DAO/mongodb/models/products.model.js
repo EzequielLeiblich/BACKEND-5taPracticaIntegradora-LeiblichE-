@@ -22,17 +22,25 @@ const ProductsSchema = new mongoose.Schema(
             required: true,
             default: true
         },
-        thumbnails: {
-            type: [{
-                name: {
-                    type: String,
-                    required: true
-                },
-                reference: {
-                    type: String,
-                    required: true
-                }
-            }]
+        img1: {
+            name: {
+                type: String,
+                required: true
+            },
+            reference: {
+                type: String,
+                required: true
+            },
+        },
+        img2: {
+            name: {
+                type: String,
+                required: true
+            },
+            reference: {
+                type: String,
+                required: true
+            },
         },
         code: {
             type: String,
@@ -47,6 +55,10 @@ const ProductsSchema = new mongoose.Schema(
             required: true
         },
         owner: {
+            type: String,
+            required: true
+        },
+        role:{
             type: String,
             required: true
         },

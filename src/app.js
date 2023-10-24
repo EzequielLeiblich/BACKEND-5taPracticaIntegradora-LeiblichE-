@@ -150,7 +150,7 @@ app.use('/api/users', userRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/tickets", ticketRouter);
+app.use('/api/payments', paymentsRouter);
 app.use("/mockProducts", mockRouter);
 app.use('/loggerTest', loggerRouter);
-app.use('/api/payments', paymentsRouter);
 

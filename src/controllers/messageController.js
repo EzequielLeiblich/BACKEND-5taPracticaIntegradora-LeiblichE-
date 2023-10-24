@@ -33,7 +33,7 @@ export default class MessageController {
                 req.logger.error(response.message);
             } else if (resultService.statusCode === 200) {
                 const messages = await this.messageService.getAllMessageService();
-                req.socketServer.sockets.emit('messages', messages.result)
+                req.socketServer.sockets.emit('messages', messages)
                 req.logger.debug(response.message);
             };
         } catch (error) {
@@ -55,6 +55,8 @@ export default class MessageController {
             } else if (resultService.statusCode === 404) {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
+                const messages = await this.messageService.getAllMessageService();
+                req.socketServer.sockets.emit('messages', messages);
                 response.result = resultService.result;
                 req.logger.debug(response.message);
             };
@@ -99,7 +101,7 @@ export default class MessageController {
                 req.logger.warn(response.message);
             } else if (resultService.statusCode === 200) {
                 const messages = await this.messageService.getAllMessageService();
-                req.socketServer.sockets.emit('messages', messages.result);
+                req.socketServer.sockets.emit('messages', messages);
                 req.logger.debug(response.message);
             };
         } catch (error) {

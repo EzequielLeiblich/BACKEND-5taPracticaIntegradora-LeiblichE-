@@ -42,6 +42,8 @@ export default {
   // Token Request Pass
   RESET_PASSWORD_TOKEN: process.env.RESET_PASSWORD_TOKEN,
   RESET_PASSWORD_COOKIE: process.env.RESET_PASSWORD_COOKIE,
+  // Link Reset pass view:
+  URL_REST_PASS: process.env.URL_REST_PASS,
   // Keys Stripe:
   STRIPE_KEY_PUBLIC: process.env.STRIPE_KEY_PUBLIC,
   STRIPE_KEY_SECRET: process.env.STRIPE_KEY_SECRET,
